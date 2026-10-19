@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "io.github.qempexe.vitrine",
+  "name": "Vitrine",
+  "version": "1.0.0",
+  "author": "qempexe",
+  "license": "MIT",
+  "description": "Desktop widgets behind your windows: clocks, dates, system readings, now playing and notes, on customizable cards.",
+  "kinds": ["service", "bar-widget"],
+  "entryPoints": {
+    "service": "qml/Service.qml",
+    "barWidget": "qml/BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "Vitrine",
+    "category": "System",
+    "allowMultiple": false,
+    "defaultSection": "right"
+  }
+}
