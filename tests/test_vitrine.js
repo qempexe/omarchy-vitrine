@@ -333,6 +333,20 @@ t("covers are fetched with a cap and shrunk in a capped process before they are 
   assert.ok(!/loadImage\([^)]*artUrl/.test(view) && /covers\.fileFor\(/.test(view))
   assert.ok(/environment: \(\{ VIPS_BLOCK_UNTRUSTED: "1", VIPS_CONCURRENCY: "1"/.test(fs.readFileSync(path.join(__dirname, "../qml/core/ArtCache.qml"), "utf8")))
 })
+t("custom colors are used exactly as picked", () => {
+  const th = { bg: [20, 20, 20], fg: [224, 224, 224], accent: [255, 106, 31], urgent: [255, 0, 0], barText: [200, 200, 200], palette: [], borders: [] }
+  const w = Kinds.make("clock", "w1"), bare = Object.assign(Kinds.make("clock", "w2"), { card: "none" })
+  // light text on a light card: still the text color you picked
+  const cfg = (o) => Schema.resolve(Object.assign({ frame: "rounded", colorMode: "custom", customBg: "#e0def4", customFg: "#c0caf5", accentColor: "#fabd2f" }, o))
+  const c = Look.colorsFor(cfg({}), th, w, 0, 0.5)
+  assert.deepStrictEqual([c.ink, c.bg, c.accent], [[192, 202, 245], [224, 222, 244], [250, 189, 47]])
+  assert.deepStrictEqual(Look.colorsFor(cfg({ bareInk: "theme" }), th, bare, 0, 0.5).ink, [192, 202, 245])
+  assert.deepStrictEqual(Look.colorsFor(cfg({ bareInk: "accent" }), th, bare, 0, 0.5).ink, [250, 189, 47])
+  assert.deepStrictEqual(Look.colorsFor(cfg({ bareInk: "bar" }), th, bare, 0, 0.5).ink, [200, 200, 200])
+  // the panel: no swaps to black or white in Custom
+  const ui = fs.readFileSync(path.join(__dirname, "../qml/core/UiState.qml"), "utf8")
+  assert.ok(/fg: custom \? wantFg/.test(ui) && /accentText: custom \? fg/.test(ui) && /onText\(c\) \{ return custom \? fg/.test(ui))
+})
 t("manifest", () => {
   const m = JSON.parse(fs.readFileSync(path.join(__dirname, "../manifest.json"), "utf8"))
   assert.strictEqual(m.id, "io.github.qempexe.vitrine"); assert.strictEqual(m.version, "1.0.0")
