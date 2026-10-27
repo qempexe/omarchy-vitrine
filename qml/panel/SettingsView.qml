@@ -12,7 +12,9 @@ Item {
     readonly property var ui: svc ? svc.ui : null
     property bool confirmReset: false
 
-    readonly property int group: ui ? Math.max(0, Math.min(Schema.groups.length - 1, ui.settingsGroup)) : 0
+    readonly property int group: ui ? Math.max(0, Math.min(Schema.groups.length, ui.settingsGroup)) : 0
+    // the last tab, after the groups: About
+    readonly property bool onAbout: group === Schema.groups.length && !filtering
 
     function val(key) {
         const it = Schema.itemByKey[key]
@@ -191,7 +193,7 @@ Item {
                 spacing: 0
 
                 Repeater {
-                    model: Schema.groups
+                    model: Schema.groups.concat([{ title: "About" }])
                     delegate: Item {
                         readonly property bool on: index === root.group
                         // each tab as wide as its name, the spare room shared out
@@ -230,9 +232,17 @@ Item {
             }
         }
 
+        AboutPage {
+            ui: root.ui
+            visible: root.onAbout
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+        }
+
         // rows
         Flickable {
             id: flick
+            visible: !root.onAbout
             Layout.fillWidth: true
             Layout.fillHeight: true
             contentWidth: width

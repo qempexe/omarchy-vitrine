@@ -31,10 +31,10 @@ Item {
     function toggle() { if (popup.visible) root.close(); else root.open() }
     function closeForPopoutSwitch() { root.close() }
 
-    // Alt+Left / Alt+Right walk through the settings groups
+    // Alt+Left / Alt+Right walk through the settings groups, and About after them
     function stepTab(d) {
         if (!root.ui) return
-        const n = Schema.groups.length
+        const n = Schema.groups.length + 1
         root.ui.settingsGroup = (root.ui.settingsGroup + d + n) % n
     }
 
