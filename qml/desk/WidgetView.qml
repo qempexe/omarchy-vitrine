@@ -82,7 +82,12 @@ Item {
     }
     readonly property int serial: svc ? svc.appearSerial : 0
     onSerialChanged: comeIn()
-    Component.onCompleted: comeIn()
+    Component.onCompleted: {
+        comeIn()
+        // a widget made while music plays has its cover from the start
+        if (root.rawArt !== "" && root.svc) root.svc.covers.ask(root.rawArt)
+        root.takeArt()
+    }
 
     // ---- the card -------------------------------------------------------------------
 
@@ -171,22 +176,28 @@ Item {
     onLookKeyChanged: content.requestPaint()
     onAnimChanged: content.requestPaint()
 
-    // the music's cover, loaded into the canvas before it is drawn
+    // the music's cover: never the player's file or address itself, but the small, clean
+    // copy the cover cache makes of it (core/ArtCache.qml), loaded into the canvas before
+    // it is drawn. the canvas keeps a picture until it is unloaded: the one before goes
     QtObject {
         id: art
         property string url: ""
         property bool ready: false
     }
     readonly property var mediaNow: w && w.kind === "media" && svc ? (svc.media.serial, svc.media.dataFor(w.player)) : null
-    onMediaNowChanged: {
-        let u = root.mediaNow && root.mediaNow.artUrl ? root.mediaNow.artUrl : ""
-        if (!/^(file|https?):\/\//.test(u)) u = ""
+    readonly property string rawArt: mediaNow && mediaNow.artUrl ? String(mediaNow.artUrl) : ""
+    onRawArtChanged: if (rawArt !== "" && svc) svc.covers.ask(rawArt)
+    readonly property string cleanArt: svc ? (svc.covers.done, svc.covers.fileFor(rawArt)) : ""
+    onCleanArtChanged: takeArt()
+    function takeArt() {
+        const u = root.cleanArt
         if (u === art.url) return
         if (art.url !== "") content.unloadImage(art.url)
         art.url = u
         art.ready = false
         if (u !== "") content.loadImage(u)
     }
+
 
     // nothing playing and the widget hides then
     readonly property bool idleHidden: !!(w && w.kind === "media" && w.idle === "hide" && root.mediaNow && !root.mediaNow.has && root.live)

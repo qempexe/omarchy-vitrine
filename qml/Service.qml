@@ -268,6 +268,9 @@ Item {
 
     MediaData { id: media; active: root.mediaWidgets.length > 0 }
     property alias media: media
+    // the covers, made into small clean copies before any widget draws them
+    ArtCache { id: covers }
+    property alias covers: covers
 
     Zones {
         id: zones
