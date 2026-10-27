@@ -98,16 +98,22 @@ Item {
                 anchors.margins: ui.px(12)
                 spacing: ui.px(10)
 
-                Rectangle {   // badge: a little desktop with a clock card and two small ones
+                Rectangle {
                     Layout.alignment: Qt.AlignVCenter
                     implicitWidth: ui.px(30); implicitHeight: ui.px(30)
                     radius: ui.r(1.5)
                     color: ui.accentTint(0.18)
                     border.width: 1
                     border.color: ui.tint(0.08)
-                    Rectangle { x: ui.px(5); y: ui.px(6); width: ui.px(20); height: ui.px(9); radius: 2; color: "transparent"; border.width: 1.2; border.color: ui.accent }
-                    Rectangle { x: ui.px(5); y: ui.px(18); width: ui.px(9); height: ui.px(6); radius: 1.5; color: ui.tint(0.55) }
-                    Rectangle { x: ui.px(16); y: ui.px(18); width: ui.px(9); height: ui.px(6); radius: 1.5; color: ui.tint(0.35) }
+                    Image {   // the logo, light or dark to suit the panel
+                        anchors.centerIn: parent
+                        width: ui.px(24); height: width
+                        source: Qt.resolvedUrl(ui.lightSurface ? "../../assets/logo-dark.png" : "../../assets/logo.png")
+                        sourceSize.width: 96
+                        sourceSize.height: 96
+                        smooth: true
+                        mipmap: true
+                    }
                 }
 
                 ColumnLayout {
