@@ -56,7 +56,7 @@ Item {
             Layout.alignment: Qt.AlignHCenter
             visible: root.version !== ""
             text: "Version " + root.version
-            color: ui.accentInk
+            color: ui.accent
             font.pixelSize: ui.fs(11)
             font.letterSpacing: 1.5
         }
@@ -68,7 +68,7 @@ Item {
             Text {   // the system font: the panel's font draws the heart as an outline
                 textFormat: Text.PlainText
                 text: "♥"
-                color: ui.accentInk
+                color: ui.accent
                 font.pixelSize: ui.fs(13)
                 anchors.verticalCenter: parent.verticalCenter
             }
@@ -83,7 +83,7 @@ Item {
             radius: ui.r(1.5)
             color: moreArea.containsMouse ? ui.accentTint(0.22) : ui.tint(0.07)
             border.width: 1
-            border.color: Qt.rgba(ui.accentInk.r, ui.accentInk.g, ui.accentInk.b, moreArea.containsMouse ? 0.8 : 0.35)
+            border.color: ui.accentTint(moreArea.containsMouse ? 0.8 : 0.35)
             Behavior on color { enabled: ui.animations; ColorAnimation { duration: 100 } }
 
             Txt {

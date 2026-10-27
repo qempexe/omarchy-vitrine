@@ -47,7 +47,7 @@ Item {
     readonly property color frameColor: {
         const n = borderColors.length
         const pick = cfgSafe.panelFrameColor
-        if (n === 0 || pick === "accent" || !pick) return accentInk
+        if (n === 0 || pick === "accent" || !pick) return accent
         if (pick === "first") return Qt.color(borderColors[0])
         if (pick === "last") return Qt.color(borderColors[n - 1])
         return Qt.color(borderColors[Math.floor((n - 1) / 2)])
@@ -69,9 +69,9 @@ Item {
     readonly property color surface: custom ? hexOr(cfgSafe.customBg, "#141414")
         : mono ? grey(lumOf(barSurface)) : barSurface
     readonly property bool lightSurface: lumOf(surface) > 0.5
-    // text must be readable on the surface, else fall back to black/white
     readonly property color wantFg: custom ? hexOr(cfgSafe.customFg, "#e0e0e0") : barFg
-    readonly property color fg: mono ? contrast(surface)
+    // text: yours exactly in Custom, else readable on the surface or black/white
+    readonly property color fg: custom ? wantFg : mono ? contrast(surface)
         : (Math.abs(lumOf(wantFg) - lumOf(surface)) >= 0.35 ? wantFg : contrast(surface))
     readonly property bool hasThemeAccent: themeAccent.a > 0
     readonly property color themeAc: hasThemeAccent ? Qt.rgba(themeAccent.r, themeAccent.g, themeAccent.b, 1) : barFg
@@ -95,20 +95,8 @@ Item {
         return { bg: barSurface, fg: barFg, ac: themeAc }
     }
 
-    readonly property color accentText: contrast(accent)
-    // the accent where it is text or a thin line on the panel: the same hue, made darker
-    // (on a light panel) or lighter (on a dark one) only as much as it needs to be read.
-    // fills keep the accent itself
-    readonly property color accentInk: inkOn(accent, surface)
-    function inkOn(c, on) {
-        if (Math.abs(lumOf(c) - lumOf(on)) >= 0.35) return c
-        const to = lumOf(on) > 0.5 ? 0 : 1
-        for (let t = 0.1; t < 1; t += 0.1) {
-            const m = Qt.rgba(c.r + (to - c.r) * t, c.g + (to - c.g) * t, c.b + (to - c.b) * t, 1)
-            if (Math.abs(lumOf(m) - lumOf(on)) >= 0.35) return m
-        }
-        return contrast(on)
-    }
+    // text on an accent fill: black or white, or in Custom your own text color
+    readonly property color accentText: custom ? fg : contrast(accent)
     readonly property color urgent: mono ? fg : Qt.rgba(themeUrgent.r, themeUrgent.g, themeUrgent.b, 1)
     readonly property color bad: mono ? fg
         : (lightSurface ? Qt.rgba(0.74, 0.16, 0.26, 1) : Qt.rgba(0.97, 0.46, 0.56, 1))
@@ -124,7 +112,7 @@ Item {
         return Qt.rgba(surface.r * 0.78 + c.r * 0.22, surface.g * 0.78 + c.g * 0.22,
                        surface.b * 0.78 + c.b * 0.22, 1)
     }
-    function onText(c) { return contrast(onFill(c)) }
+    function onText(c) { return custom ? fg : contrast(onFill(c)) }
     // panel bg with opacity
     readonly property color panelColor: Qt.rgba(surface.r, surface.g, surface.b, opacityF)
 

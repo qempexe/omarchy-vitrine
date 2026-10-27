@@ -98,7 +98,7 @@ ColumnLayout {
             radius: ui.r(1.4)
             color: on ? ui.accentTint(0.14) : ui.tint(rowArea.containsMouse ? 0.08 : 0.04)
             border.width: on ? 1.5 : 1
-            border.color: on ? ui.accentInk : ui.tint(0.08)
+            border.color: on ? ui.accent : ui.tint(0.08)
 
             MouseArea { id: rowArea; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: root.svc.selected = row.modelData.id }
 
@@ -148,7 +148,7 @@ ColumnLayout {
         font.pixelSize: ui.fs(10)
         font.weight: Font.DemiBold
         font.letterSpacing: 1.5
-        color: ui.accentInk
+        color: ui.accent
     }
 
     Repeater {
