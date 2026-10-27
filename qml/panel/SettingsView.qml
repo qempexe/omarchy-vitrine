@@ -15,17 +15,17 @@ Item {
     readonly property int group: ui ? Math.max(0, Math.min(Schema.groups.length - 1, ui.settingsGroup)) : 0
 
     function val(key) {
-        var it = Schema.itemByKey[key]
+        const it = Schema.itemByKey[key]
         if (it && it.kind === "palette") {
-            var o = {}
-            for (var i = 0; i < it.targets.length; i++) o[it.targets[i].key] = val(it.targets[i].key)
+            const o = {}
+            for (let i = 0; i < it.targets.length; i++) o[it.targets[i].key] = val(it.targets[i].key)
             return o
         }
         return svc && svc.cfg && svc.cfg[key] !== undefined ? svc.cfg[key] : Schema.defaults[key]
     }
 
     function same(item) {
-        var v = val(item.key)
+        const v = val(item.key)
         return item.kind === "palette" || item.kind === "widgets" ? JSON.stringify(v) === JSON.stringify(item.fallback) : Util.toText(v) === Util.toText(item.fallback)
     }
 
@@ -39,17 +39,17 @@ Item {
     //   { any: [ ... ] }     when at least one of these fits
     function fails(c) {
         if (c.any) {
-            for (var j = 0; j < c.any.length; j++) if (!fails(c.any[j])) return false
+            for (let j = 0; j < c.any.length; j++) if (!fails(c.any[j])) return false
             return true
         }
-        var v = Util.toText(val(c.key))
+        const v = Util.toText(val(c.key))
         if (c.is && c.is.indexOf(v) < 0) return true
         if (c.not && c.not.indexOf(v) >= 0) return true
         return false
     }
     function dimmed(item) {
         if (!item.when) return false
-        for (var i = 0; i < item.when.length; i++) if (fails(item.when[i])) return true
+        for (let i = 0; i < item.when.length; i++) if (fails(item.when[i])) return true
         return false
     }
 
@@ -64,24 +64,24 @@ Item {
     // does a row match the search? label, hint, section, tab and option names all count
     function matches(item, title, q) {
         if (q === "") return true
-        var hay = [item.label || "", item.hint || "", item.section || "", title]
-        if (item.labels) for (var k in item.labels) if (typeof item.labels[k] === "string") hay.push(item.labels[k])
+        const hay = [item.label || "", item.hint || "", item.section || "", title]
+        if (item.labels) for (const k in item.labels) if (typeof item.labels[k] === "string") hay.push(item.labels[k])
         return hay.join(" ").toLowerCase().indexOf(q) !== -1
     }
 
     // the rows to show, each with the heading that goes above it (or "")
     readonly property var rows: {
-        var out = []
-        var q = root.query.trim().toLowerCase()
-        var last = ""
-        for (var g = 0; g < Schema.groups.length; g++) {
+        const out = []
+        const q = root.query.trim().toLowerCase()
+        let last = ""
+        for (let g = 0; g < Schema.groups.length; g++) {
             if (!root.filtering && g !== root.group) continue
-            var items = Schema.groups[g].items
-            for (var i = 0; i < items.length; i++) {
-                var it = items[i]
+            const items = Schema.groups[g].items
+            for (let i = 0; i < items.length; i++) {
+                const it = items[i]
                 if (root.changedOnly && (it.kind === "presets" || it.kind === "looks" || it.kind === "widgets" || root.same(it))) continue
                 if (!root.matches(it, Schema.groups[g].title, q)) continue
-                var heading = root.filtering ? Schema.groups[g].title + (it.section ? "  ›  " + it.section : "") : (it.section || "")
+                const heading = root.filtering ? Schema.groups[g].title + (it.section ? "  ›  " + it.section : "") : (it.section || "")
                 out.push({ item: it, heading: heading !== last ? heading : "" })
                 last = heading
             }
@@ -95,10 +95,10 @@ Item {
 
     // count of changed settings (footer)
     readonly property int changed: {
-        var n = 0
-        for (var g = 0; g < Schema.groups.length; g++) {
-            var items = Schema.groups[g].items
-            for (var i = 0; i < items.length; i++)
+        let n = 0
+        for (let g = 0; g < Schema.groups.length; g++) {
+            const items = Schema.groups[g].items
+            for (let i = 0; i < items.length; i++)
                 if (items[i].kind !== "presets" && items[i].kind !== "looks" && items[i].kind !== "widgets" && !same(items[i])) n++
         }
         return n
@@ -345,8 +345,8 @@ Item {
                                     if (root.offHere(rowBox.row) || !root.svc) return
                                     if (rowBox.row.kind === "palette") {
                                         if (v && v.reset) {
-                                            for (var i = 0; i < rowBox.row.targets.length; i++) {
-                                                var k = rowBox.row.targets[i].key
+                                            for (let i = 0; i < rowBox.row.targets.length; i++) {
+                                                const k = rowBox.row.targets[i].key
                                                 root.svc.setValue(k, rowBox.row.fallback[k])
                                             }
                                         } else if (v && v.key) root.svc.setValue(v.key, v.value)

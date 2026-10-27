@@ -70,24 +70,24 @@ ColumnLayout {
                     onAcChanged: requestPaint()
                     Component.onCompleted: requestPaint()
                     onPaint: {
-                        var ctx = getContext("2d")
+                        const ctx = getContext("2d")
                         ctx.reset()
                         if (!root.svc) return
                         // the screen
                         ctx.fillStyle = Qt.rgba(fg.r, fg.g, fg.b, 0.06)
                         ctx.fillRect(0, 0, width, height)
-                        var cfg = Schema.resolve(tile.modelData.set)
-                        var th = root.svc.theme
-                        var k = width / 1920
-                        for (var i = 0; i < cfg.widgets.length; i++) {
-                            var w = cfg.widgets[i]
-                            var colors = Look.colorsFor(cfg, th, w, i, w.x / 1000)
-                            var box = Look.boxOf(cfg, w)
-                            var bw = Math.max(4, box.w * k), bh = Math.max(3, box.h * k)
-                            var x = Math.max(0, Math.min(width - bw, w.x / 1000 * width - bw / 2))
-                            var y = Math.max(0, Math.min(height - bh, w.y / 1000 * height - bh / 2))
+                        const cfg = Schema.resolve(tile.modelData.set)
+                        const th = root.svc.theme
+                        const k = width / 1920
+                        for (let i = 0; i < cfg.widgets.length; i++) {
+                            const w = cfg.widgets[i]
+                            const colors = Look.colorsFor(cfg, th, w, i, w.x / 1000)
+                            const box = Look.boxOf(cfg, w)
+                            const bw = Math.max(4, box.w * k), bh = Math.max(3, box.h * k)
+                            const x = Math.max(0, Math.min(width - bw, w.x / 1000 * width - bw / 2))
+                            const y = Math.max(0, Math.min(height - bh, w.y / 1000 * height - bh / 2))
                             if (box.card) {
-                                var p = Look.cardParams(cfg, th, colors, bw + 2, bh + 2, 1)
+                                const p = Look.cardParams(cfg, th, colors, bw + 2, bh + 2, 1)
                                 p.keep = true; p.ox = x - 1; p.oy = y - 1
                                 p.r = Math.max(0, cfg.radius * k)
                                 p.lineWidth = p.lineWidth > 0 ? 0.6 : 0
@@ -95,9 +95,9 @@ ColumnLayout {
                                 Card.paint(ctx, p)
                             }
                             // the ink: a bar the size of what the widget shows
-                            var c = box.content
+                            const c = box.content
                             ctx.fillStyle = Look.css(colors.ink, 0.85)
-                            var lh = Math.max(1, c.h * k * 0.45)
+                            const lh = Math.max(1, c.h * k * 0.45)
                             ctx.fillRect(x + c.x * k + c.w * k * 0.1, y + c.y * k + (c.h * k - lh) / 2, Math.max(2, c.w * k * 0.8), lh)
                             ctx.fillStyle = Look.css(colors.accent, 0.9)
                             ctx.fillRect(x + c.x * k + c.w * k * 0.1, y + c.y * k + (c.h * k + lh) / 2 + 0.5, Math.max(1, c.w * k * 0.3), Math.max(0.6, lh * 0.25))

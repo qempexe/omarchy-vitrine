@@ -26,14 +26,14 @@ Item {
     signal changed()
 
     function get(key) {
-        var v = values[key]
+        const v = values[key]
         return v === undefined ? null : v
     }
 
     function set(key, value) {
         if (!Schema.isSetting(key)) return
-        var next = {}
-        for (var k in values) next[k] = values[k]
+        const next = {}
+        for (const k in values) next[k] = values[k]
         if (value === null || value === undefined) delete next[key]
         else next[key] = value
         values = next
@@ -43,9 +43,9 @@ Item {
 
     // several settings in one write (presets, saved looks, imports)
     function setMany(obj) {
-        var next = {}
-        for (var k in values) next[k] = values[k]
-        for (var key in obj) {
+        const next = {}
+        for (const k in values) next[k] = values[k]
+        for (const key in obj) {
             if (!Schema.isSetting(key)) continue
             if (obj[key] === null || obj[key] === undefined) delete next[key]
             else next[key] = obj[key]
@@ -57,8 +57,8 @@ Item {
 
     // reset everything in one write
     function resetAll(defaults) {
-        var next = {}
-        for (var k in defaults) next[k] = defaults[k]
+        const next = {}
+        for (const k in defaults) next[k] = defaults[k]
         values = next
         persist()
         changed()
@@ -82,7 +82,7 @@ Item {
     // FileView.text is a function in quickshell, not a property
     function readText(fv) {
         try {
-            var t = typeof fv.text === "function" ? fv.text() : fv.text
+            const t = typeof fv.text === "function" ? fv.text() : fv.text
             return typeof t === "string" ? t : ""
         } catch (e) { return "" }
     }
@@ -90,9 +90,9 @@ Item {
     // startup: file values, with in-memory changes on top
     function absorb(text) {
         if (loaded) return
-        var fromFile
+        let fromFile
         try {
-            var parsed = JSON.parse(text || "{}")
+            const parsed = JSON.parse(text || "{}")
             fromFile = (parsed && typeof parsed === "object" && !Array.isArray(parsed)) ? parsed : ({})
             // older files: turned into today's keys right away, so changing one setting
             // later can't lose the others that came from the same old value
@@ -102,9 +102,9 @@ Item {
         }
         // only keys that are real settings are kept, so odd names like
         // "__proto__" in a hand-edited file never end up in here
-        var merged = {}
-        for (var i = 0; i < Schema.settingKeys.length; i++) {
-            var k = Schema.settingKeys[i]
+        const merged = {}
+        for (let i = 0; i < Schema.settingKeys.length; i++) {
+            const k = Schema.settingKeys[i]
             if (values[k] !== undefined) merged[k] = values[k]
             else if (fromFile[k] !== undefined) merged[k] = fromFile[k]
         }

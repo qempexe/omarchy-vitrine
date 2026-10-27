@@ -25,13 +25,13 @@ Item {
 
     // the player a widget follows: the one playing (of the app it is kept to, if any)
     function pick(filter) {
-        var f = (typeof filter === "string" ? filter : "").trim().toLowerCase()
-        var best = null
-        for (var i = 0; i < root.players.length; i++) {
-            var p = root.players[i]
+        const f = (typeof filter === "string" ? filter : "").trim().toLowerCase()
+        let best = null
+        for (let i = 0; i < root.players.length; i++) {
+            const p = root.players[i]
             if (!p) continue
             if (f !== "" && root.nameOf(p).indexOf(f) === -1) continue
-            var hasTrack = false
+            let hasTrack = false
             try { hasTrack = !!(p.trackTitle || p.trackArtist) } catch (e) { }
             if (!hasTrack) continue
             if (root.isPlaying(p)) return p
@@ -41,9 +41,9 @@ Item {
     }
 
     function dataFor(filter) {
-        var p = root.pick(filter)
+        const p = root.pick(filter)
         if (!p) return { has: false, title: "", artist: "", album: "", artUrl: "", pos: 0, len: 0, playing: false, player: "" }
-        var out = { has: true, title: "", artist: "", album: "", artUrl: "", pos: 0, len: 0, playing: root.isPlaying(p), player: "" }
+        const out = { has: true, title: "", artist: "", album: "", artUrl: "", pos: 0, len: 0, playing: root.isPlaying(p), player: "" }
         try { out.title = p.trackTitle || "" } catch (e) { }
         try { out.artist = p.trackArtist || "" } catch (e) { }
         try { out.album = p.trackAlbum || "" } catch (e) { }
@@ -55,7 +55,7 @@ Item {
     }
 
     readonly property bool anyPlaying: {
-        for (var i = 0; i < root.players.length; i++) if (root.players[i] && root.isPlaying(root.players[i])) return true
+        for (let i = 0; i < root.players.length; i++) if (root.players[i] && root.isPlaying(root.players[i])) return true
         return false
     }
 
@@ -65,8 +65,8 @@ Item {
         repeat: true
         running: root.active && root.anyPlaying
         onTriggered: {
-            for (var i = 0; i < root.players.length; i++) {
-                var p = root.players[i]
+            for (let i = 0; i < root.players.length; i++) {
+                const p = root.players[i]
                 try { if (p && root.isPlaying(p) && typeof p.positionChanged === "function") p.positionChanged() } catch (e) { }
             }
             root.serial++

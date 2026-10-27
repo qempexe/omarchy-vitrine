@@ -23,7 +23,7 @@ Item {
     property var presets: []
     property var abouts: ({})          // tiles: a sentence for each option, the picked one shows
     readonly property string fullHint: {
-        var extra = abouts && typeof abouts[str(current)] === "string" ? abouts[str(current)] : ""
+        const extra = abouts && typeof abouts[str(current)] === "string" ? abouts[str(current)] : ""
         return hint + (hint !== "" && extra !== "" ? " " : "") + extra
     }
     property var value: null
@@ -53,12 +53,12 @@ Item {
     function same(a, b) { return str(a) === str(b) }
     function labelFor(opt) { return typeof labels[opt] === "string" ? labels[opt] : Util.toText(opt) }
     function show(v) {
-        var n = num(v) / divisor
+        const n = num(v) / divisor
         return isFinite(n) ? "" + parseFloat(n.toFixed(decimals)) : "?"
     }
     function nudge(dir) {
-        var cur = num(current)
-        var v = Math.max(min, Math.min(max, cur + dir * step))
+        const cur = num(current)
+        const v = Math.max(min, Math.min(max, cur + dir * step))
         if (v !== cur) commit(v)
     }
     function validHex(s) { return /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(s) }
@@ -71,7 +71,7 @@ Item {
         ? JSON.stringify(current) === JSON.stringify(defaultValue) : same(current, defaultValue)
     readonly property var picks: kind === "multi" && Array.isArray(current) ? current : []
     function toggleMulti(opt) {
-        var list = root.picks.slice(), i = list.indexOf(opt)
+        const list = root.picks.slice(), i = list.indexOf(opt)
         if (i >= 0) { if (list.length > 1) list.splice(i, 1) } else list.push(opt)
         root.commit(list)
     }
@@ -170,7 +170,7 @@ Item {
             visible: root.mode === "tiles"
             // even rows for short lists, five across for long ones
             columns: {
-                var n = root.options.length
+                const n = root.options.length
                 if (n <= 5) return Math.max(1, n)
                 if (n % 5 === 0) return 5
                 if (n <= 12 && n % 4 === 0) return 4
@@ -519,13 +519,13 @@ Item {
             Repeater {
                 model: {
                     if (root.kind !== "screen") return []
-                    var main = root.svc ? root.svc.mainName : ""
-                    var out = [{ v: "", l: root.emptyLabel + (main !== "" && root.allowAll ? " (" + main + ")" : "") }]
+                    const main = root.svc ? root.svc.mainName : ""
+                    const out = [{ v: "", l: root.emptyLabel + (main !== "" && root.allowAll ? " (" + main + ")" : "") }]
                     if (root.allowAll) out.push({ v: "*", l: "Every screen" })
-                    var list = root.svc ? root.svc.screenList : []
-                    var names = []
-                    for (var i = 0; i < list.length; i++) if (list[i].name) { names.push(list[i].name); out.push({ v: list[i].name, l: list[i].label }) }
-                    var cur = root.str(root.current)
+                    const list = root.svc ? root.svc.screenList : []
+                    const names = []
+                    for (let i = 0; i < list.length; i++) if (list[i].name) { names.push(list[i].name); out.push({ v: list[i].name, l: list[i].label }) }
+                    const cur = root.str(root.current)
                     if (cur !== "" && cur !== "*" && names.indexOf(cur) === -1) out.push({ v: cur, l: cur + " (not connected)" })
                     return out
                 }
@@ -549,8 +549,8 @@ Item {
                 Repeater {
                     model: {
                         if (root.kind !== "font") return []
-                        var out = root.options.slice()
-                        var cur = root.str(root.current)
+                        const out = root.options.slice()
+                        const cur = root.str(root.current)
                         if (out.indexOf(cur) === -1) out.push(cur)
                         return out
                     }
@@ -608,10 +608,10 @@ Item {
                 spacing: ui.px(6)
                 Repeater {
                     model: {
-                        var q = fontSearch.text.trim().toLowerCase()
+                        const q = fontSearch.text.trim().toLowerCase()
                         if (q === "" || !root.svc) return []
-                        var out = [], all = root.svc.systemFonts
-                        for (var i = 0; i < all.length && out.length < 24; i++) if (all[i].toLowerCase().indexOf(q) !== -1) out.push(all[i])
+                        const out = [], all = root.svc.systemFonts
+                        for (let i = 0; i < all.length && out.length < 24; i++) if (all[i].toLowerCase().indexOf(q) !== -1) out.push(all[i])
                         return out
                     }
                     delegate: Rectangle {
@@ -668,9 +668,9 @@ Item {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
                     function apply(mx) {
-                        var f = Math.max(0, Math.min(1, mx / width))
-                        var raw = root.min + f * root.span
-                        var snapped = root.min + Math.round((raw - root.min) / root.step) * root.step
+                        const f = Math.max(0, Math.min(1, mx / width))
+                        const raw = root.min + f * root.span
+                        let snapped = root.min + Math.round((raw - root.min) / root.step) * root.step
                         snapped = Math.max(root.min, Math.min(root.max, snapped))
                         if (snapped !== root.num(root.current)) root.commit(snapped)
                     }

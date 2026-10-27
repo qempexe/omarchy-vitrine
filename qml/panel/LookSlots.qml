@@ -16,12 +16,12 @@ ColumnLayout {
 
     readonly property var looks: svc ? svc.cfg.savedLooks : []
     readonly property int used: {
-        var n = 0
-        for (var i = 0; i < root.looks.length; i++) if (root.looks[i]) n++
+        let n = 0
+        for (let i = 0; i < root.looks.length; i++) if (root.looks[i]) n++
         return n
     }
     readonly property int firstFree: {
-        for (var i = 0; i < Schema.LOOK_SLOTS; i++) if (!root.looks[i]) return i
+        for (let i = 0; i < Schema.LOOK_SLOTS; i++) if (!root.looks[i]) return i
         return -1
     }
     property bool showAll: false
@@ -30,13 +30,13 @@ ColumnLayout {
 
     function describe(look) {
         if (!look) return "Empty"
-        var parts = []
-        var n = look.widgets ? look.widgets.length : 0
+        const parts = []
+        const n = look.widgets ? look.widgets.length : 0
         parts.push(n + (n === 1 ? " widget" : " widgets"))
         // what the cards are, in the same words as the settings
         function named(key, value, skip) {
             if (value === undefined || skip.indexOf(value) !== -1) return
-            var it = Schema.itemFor(key)
+            const it = Schema.itemFor(key)
             if (it && it.labels && it.labels[value]) parts.push(it.labels[value].toLowerCase())
         }
         named("frame", look.frame, [])
@@ -68,7 +68,7 @@ ColumnLayout {
             enabled: root.firstFree >= 0
             text: root.firstFree >= 0 ? "Save in a free place" : "All places taken"
             onClicked: {
-                var i = root.svc.saveFreeLook()
+                const i = root.svc.saveFreeLook()
                 if (i >= 0) { root.justSaved = i; savedTimer.restart() }
             }
         }

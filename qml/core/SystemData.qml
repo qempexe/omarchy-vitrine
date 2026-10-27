@@ -26,7 +26,7 @@ Item {
 
     // ---- the files --------------------------------------------------------------------
 
-    function textOf(fv) { try { var t = fv.text(); return typeof t === "string" ? t : "" } catch (e) { return "" } }
+    function textOf(fv) { try { const t = fv.text(); return typeof t === "string" ? t : "" } catch (e) { return "" } }
     FileView { id: fStat; path: root.active ? "/proc/stat" : ""; printErrors: false }
     FileView { id: fMem; path: root.active ? "/proc/meminfo" : ""; printErrors: false }
     FileView { id: fUp; path: root.active ? "/proc/uptime" : ""; printErrors: false }
@@ -45,22 +45,22 @@ Item {
         id: settle
         interval: 60
         onTriggered: {
-            var text = "@@stat\n" + root.textOf(fStat) + "\n@@meminfo\n" + root.textOf(fMem) + "\n@@uptime\n" + root.textOf(fUp)
+            const text = "@@stat\n" + root.textOf(fStat) + "\n@@meminfo\n" + root.textOf(fMem) + "\n@@uptime\n" + root.textOf(fUp)
                      + "\n@@loadavg\n" + root.textOf(fLoad) + "\n@@netdev\n" + root.textOf(fNet)
                      + (fTemp.path !== "" ? "\n@@temp\n" + root.textOf(fTemp) : "")
-            var cur = Sys.parse(text, Date.now())
+            const cur = Sys.parse(text, Date.now())
             // the battery, from UPower
-            var dev = null
+            let dev = null
             try { dev = UPower.displayDevice } catch (e) { dev = null }
             if (dev && dev.isPresent) {
                 cur.bat = Math.round((dev.percentage || 0) * 100)
                 cur.batStatus = dev.state === UPowerDeviceState.Charging ? "Charging"
                               : (dev.state === UPowerDeviceState.FullyCharged ? "Full" : "Discharging")
             }
-            var d = Sys.delta(root.prev, cur)
+            const d = Sys.delta(root.prev, cur)
             root.prev = cur
-            var h = root.state.hist || {}
-            var peak = Math.max((root.state.netPeak || 0) * 0.98, isFinite(d.netRate) ? d.netRate : 0)
+            const h = root.state.hist || {}
+            const peak = Math.max((root.state.netPeak || 0) * 0.98, isFinite(d.netRate) ? d.netRate : 0)
             root.state = {
                 cur: cur, d: d, disks: root.state.disks, netPeak: peak,
                 hist: {
@@ -104,7 +104,7 @@ Item {
             "for z in /sys/class/thermal/thermal_zone*; do t=$(cat \"$z/type\" 2>/dev/null); case \"$t\" in x86_pkg_temp|cpu*|soc*|acpitz) echo \"$z/temp\"; exit 0;; esac; done"]
         stdout: StdioCollector {
             onStreamFinished: {
-                var p = (text || "").trim()
+                const p = (text || "").trim()
                 if (/^\/sys\/[A-Za-z0-9_\/.:-]+$/.test(p)) root.tempFile = p
                 root.tempFound = true
             }
@@ -115,9 +115,9 @@ Item {
 
     function readDisks() {
         if (!root.active || !root.wantsDisk || dfProc.running) return
-        var paths = []
-        for (var i = 0; i < root.diskPaths.length; i++) {
-            var p = root.diskPaths[i]
+        const paths = []
+        for (let i = 0; i < root.diskPaths.length; i++) {
+            const p = root.diskPaths[i]
             if (typeof p === "string" && /^\/[^\u0000\n]{0,200}$/.test(p) && paths.indexOf(p) === -1) paths.push(p)
         }
         if (paths.length === 0) return
@@ -130,14 +130,14 @@ Item {
         property var paths: []
         stdout: StdioCollector {
             onStreamFinished: {
-                var parts = (text || "").split("@@")
-                var disks = {}
-                for (var i = 0; i < parts.length; i++) {
-                    var nl = parts[i].indexOf("\n")
+                const parts = (text || "").split("@@")
+                const disks = {}
+                for (let i = 0; i < parts.length; i++) {
+                    const nl = parts[i].indexOf("\n")
                     if (nl < 0) continue
-                    var path = parts[i].slice(0, nl)
+                    const path = parts[i].slice(0, nl)
                     if (dfProc.paths.indexOf(path) === -1) continue
-                    var r = Sys.parseDf(parts[i].slice(nl + 1))
+                    const r = Sys.parseDf(parts[i].slice(nl + 1))
                     if (r) disks[path] = r
                 }
                 root.state = { cur: root.state.cur, d: root.state.d, disks: disks, hist: root.state.hist, netPeak: root.state.netPeak }

@@ -22,7 +22,7 @@ ColumnLayout {
     Component.onCompleted: if (svc && !picked && widgets.length > 0) svc.selected = widgets[0].id
 
     function where(w) {
-        var s = w.screen === "" ? "Main screen" + (svc && svc.screenList.length > 1 ? " (" + svc.mainName + ")" : "")
+        let s = w.screen === "" ? "Main screen" + (svc && svc.screenList.length > 1 ? " (" + svc.mainName + ")" : "")
               : (w.screen === "*" ? "Every screen" : w.screen)
         if (svc && svc.lost(w)) s += svc.cfg.lostScreen === "main" ? " (unplugged, on the main screen for now)" : " (unplugged, hidden for now)"
         return s + " · " + Math.round(w.x / 10) + "% across, " + Math.round(w.y / 10) + "% down"
@@ -30,19 +30,19 @@ ColumnLayout {
 
     // a row is greyed out unless the widget's other settings fit (same rules as the tabs)
     function fails(w, c) {
-        if (c.any) { for (var j = 0; j < c.any.length; j++) if (!fails(w, c.any[j])) return false; return true }
-        var v = Util.toText(w[c.key])
+        if (c.any) { for (let j = 0; j < c.any.length; j++) if (!fails(w, c.any[j])) return false; return true }
+        const v = Util.toText(w[c.key])
         if (c.is && c.is.indexOf(v) < 0) return true
         if (c.not && c.not.indexOf(v) >= 0) return true
         return false
     }
     function dimmed(w, item) {
         if (item.key === "seconds" && w.kind === "clock") {
-            var st = Kinds.styleOf(w)
+            const st = Kinds.styleOf(w)
             if (st && st.seconds === false) return true
         }
         if (!item.when) return false
-        for (var i = 0; i < item.when.length; i++) if (fails(w, item.when[i])) return true
+        for (let i = 0; i < item.when.length; i++) if (fails(w, item.when[i])) return true
         return false
     }
 

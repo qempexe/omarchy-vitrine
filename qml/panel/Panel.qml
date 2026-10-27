@@ -34,14 +34,14 @@ Item {
     // Alt+Left / Alt+Right walk through the settings groups
     function stepTab(d) {
         if (!root.ui) return
-        var n = Schema.groups.length
+        const n = Schema.groups.length
         root.ui.settingsGroup = (root.ui.settingsGroup + d + n) % n
     }
 
     // placement. done right before opening because the bar position isn't known at load.
     // anchored to the bar window's outer edge, not the widget (that one sits in the padding)
     readonly property bool vertical: {
-        var b = root.bar
+        const b = root.bar
         if (!b) return false
         try {
             if (b.vertical === true || b.isVertical === true) return true
@@ -66,7 +66,7 @@ Item {
     readonly property real padRight: (vertical && !barAtLeft) ? gap + extra : 0
 
     function sideFromText(v) {
-        var t = Util.toText(v).toLowerCase()
+        const t = Util.toText(v).toLowerCase()
         if (t.indexOf("top") >= 0) return "top"
         if (t.indexOf("bottom") >= 0) return "bottom"
         if (t.indexOf("left") >= 0) return "left"
@@ -75,20 +75,20 @@ Item {
     }
 
     function locate() {
-        var item = root.anchorItem
+        const item = root.anchorItem
         if (!item) return
-        var scr = item.screen
-        var sw = scr ? scr.width : 1920
-        var sh = scr ? scr.height : 1080
-        var side = ""
-        var qsWin = null
-        var win = null
+        const scr = item.screen
+        const sw = scr ? scr.width : 1920
+        const sh = scr ? scr.height : 1080
+        let side = ""
+        let qsWin = null
+        let win = null
 
         // 1. ask the bar window which edge it's on
         try { qsWin = item.QsWindow.window } catch (e0) { qsWin = null }
         try { win = qsWin ? qsWin : item.Window.window } catch (e1) { win = null }
         try {
-            var an = win ? win.anchors : null
+            const an = win ? win.anchors : null
             if (an) {
                 if (root.vertical) {
                     if (an.left && !an.right) side = "left"
@@ -102,9 +102,9 @@ Item {
 
         // 2. the bar object might just say it
         if (side === "" && root.bar) {
-            var names = ["position", "barPosition", "edge", "side", "location", "placement", "barSide"]
-            for (var i = 0; i < names.length && side === ""; i++) {
-                var got = ""
+            const names = ["position", "barPosition", "edge", "side", "location", "placement", "barSide"]
+            for (let i = 0; i < names.length && side === ""; i++) {
+                let got = ""
                 try { got = root.sideFromText(root.bar[names[i]]) } catch (e3) { got = "" }
                 if ((root.vertical && (got === "left" || got === "right"))
                         || (!root.vertical && (got === "top" || got === "bottom")))
@@ -113,7 +113,7 @@ Item {
         }
 
         // 3. fallback: which half of the screen we're in
-        var pos = item.mapToItem(null, 0, 0)
+        const pos = item.mapToItem(null, 0, 0)
         if (side === "") {
             if (root.vertical) side = pos.x < sw / 2 ? "left" : "right"
             else side = pos.y < sh / 2 ? "top" : "bottom"
@@ -122,9 +122,9 @@ Item {
         root.barAtLeft = side === "left"
 
         // anchor rect on the bar window's outer edge
-        var ww = (win && win.width > 0) ? win.width : 0
-        var wh = (win && win.height > 0) ? win.height : 0
-        var small = root.vertical ? (ww > 0 && ww < sw * 0.5) : (wh > 0 && wh < sh * 0.5)
+        const ww = (win && win.width > 0) ? win.width : 0
+        const wh = (win && win.height > 0) ? win.height : 0
+        const small = root.vertical ? (ww > 0 && ww < sw * 0.5) : (wh > 0 && wh < sh * 0.5)
         root.useRect = !!qsWin && small
         root.anchorWin = qsWin
         if (root.useRect) {
@@ -145,8 +145,8 @@ Item {
         }
 
         // max height that still fits under/over the bar
-        var thick = (!root.vertical && wh > 0 && wh < sh * 0.5) ? wh : 40
-        var room = root.vertical ? sh - 40 : sh - thick - root.gap - root.extra - 16
+        const thick = (!root.vertical && wh > 0 && wh < sh * 0.5) ? wh : 40
+        const room = root.vertical ? sh - 40 : sh - thick - root.gap - root.extra - 16
         root.maxHeight = Math.max(300, Math.min(1100, room))
     }
 
@@ -158,10 +158,10 @@ Item {
 
     Component.onCompleted: {
         try {
-            var g = Qt.createQmlObject(
+            const g = Qt.createQmlObject(
                 'import Quickshell.Hyprland\nHyprlandFocusGrab { }', root, "VitrineFocusGrab")
             g.windows = [popup]
-            g.cleared.connect(function() {
+            g.cleared.connect(() => {
                 root.justClosedByGrab = true
                 grabTimer.restart()
                 popup.visible = false
@@ -195,7 +195,7 @@ Item {
         anchor.adjustment: root.vertical ? PopupAdjustment.SlideY : PopupAdjustment.SlideX
 
         onVisibleChanged: {
-            if (root.grab) Qt.callLater(function() { root.grab.active = popup.visible })
+            if (root.grab) Qt.callLater(() => { root.grab.active = popup.visible })
         }
 
         Shortcut {

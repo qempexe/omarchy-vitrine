@@ -45,28 +45,28 @@ Item {
         onSigChanged: requestPaint()
         Component.onCompleted: requestPaint()
         onPaint: {
-            var ctx = getContext("2d")
+            const ctx = getContext("2d")
             ctx.reset()
             if (!root.ui) return
-            var ink = root.rgb(root.ink), soft = root.rgb(root.soft)
-            var bg = root.rgb(root.ui.surface)
-            var k = root.key, o = root.opt
+            const ink = root.rgb(root.ink), soft = root.rgb(root.soft)
+            const bg = root.rgb(root.ui.surface)
+            const k = root.key, o = root.opt
             function cardWith(set) {
-                var cfg = { frame: "rounded", surface: "filled", lines: "solid", ornaments: "none", cardOpacity: 100, radius: 6,
+                const cfg = { frame: "rounded", surface: "filled", lines: "solid", ornaments: "none", cardOpacity: 100, radius: 6,
                             fill: "solid", pattern: "none", depth: "flat", border: "accent", borderWidth: 1, outlineGradient: false }
-                for (var s in set) cfg[s] = set[s]
-                var colors = { ink: ink, accent: ink, accent2: ink, bg: Look.mix(bg, soft, 0.5), card: true }
-                var p = Look.cardParams(cfg, { borders: [], palette: [] }, colors, width, height, 4)
+                for (const s in set) cfg[s] = set[s]
+                const colors = { ink: ink, accent: ink, accent2: ink, bg: Look.mix(bg, soft, 0.5), card: true }
+                const p = Look.cardParams(cfg, { borders: [], palette: [] }, colors, width, height, 4)
                 if (set.lines === "none" || k === "surface") p.lineWidth = 0
                 Card.paint(ctx, p)
             }
-            var now = root.svc ? root.svc.cfg : ({})
+            const now = root.svc ? root.svc.cfg : ({})
             if (k === "frame") { if (o === "none") { dashes(); return } cardWith({ frame: o, lines: "solid", pointing: now.pointing, flatCorners: now.flatCorners }); return }
             if (k === "surface") { cardWith({ surface: o, lines: "none" }); return }
             if (k === "lines") { cardWith({ lines: o, cardOpacity: 30, railSide: now.railSide }); return }
             if (k === "ornaments") { cardWith({ ornaments: o, lines: "solid", border: "subtle" }); return }
             if (k === "shadow") {
-                var sh = { none: [0, 0, 0], soft: [8, 3, 0.45], deep: [14, 6, 0.75], lifted: [12, 9, 0.5], glow: [12, 0, 0.9] }[o] || [0, 0, 0]
+                const sh = { none: [0, 0, 0], soft: [8, 3, 0.45], deep: [14, 6, 0.75], lifted: [12, 9, 0.5], glow: [12, 0, 0.9] }[o] || [0, 0, 0]
                 ctx.shadowBlur = sh[0]; ctx.shadowOffsetY = sh[1]
                 ctx.shadowColor = o === "glow" ? D.rgba(ink, 0.9) : "rgba(0,0,0," + sh[2] + ")"
                 D.roundRect(ctx, 14, 6, 40, 24, 5)
@@ -75,15 +75,15 @@ Item {
                 return
             }
             if (k === "textEffect") {
-                var e = { none: [0, 0, 0], soft: [4, 2, 0.6], deep: [8, 3, 0.9], glow: [9, 0, 1] }[o] || [0, 0, 0]
+                const e = { none: [0, 0, 0], soft: [4, 2, 0.6], deep: [8, 3, 0.9], glow: [9, 0, 1] }[o] || [0, 0, 0]
                 ctx.shadowBlur = e[0]; ctx.shadowOffsetY = e[1]
                 ctx.shadowColor = o === "glow" ? D.rgba(ink, 1) : "rgba(0,0,0," + e[2] + ")"
                 D.text(ctx, "10:08", width / 2, height / 2 + 8, { px: 22, weight: 300, family: root.svc ? root.svc.fonts.sans : "", base: "alphabetic", color: D.rgba(root.rgb(root.ui.fg), 1) })
                 return
             }
             if (k === "appear") {
-                var shift = { rise: [0, 7], drop: [0, -7], slide: [-9, 0] }[o] || [0, 0]
-                var sc = o === "zoom" ? 0.8 : (o === "pop" ? 0.65 : 1)
+                const shift = { rise: [0, 7], drop: [0, -7], slide: [-9, 0] }[o] || [0, 0]
+                const sc = o === "zoom" ? 0.8 : (o === "pop" ? 0.65 : 1)
                 ctx.globalAlpha = 0.3
                 ctx.fillStyle = D.rgba(soft, 1)
                 if (o !== "none" && o !== "fade") { D.roundRect(ctx, 20 + shift[0] + 14 * (1 - sc), 10 + shift[1] + 10 * (1 - sc), 28 * sc, 20 * (o === "unfold" ? 0.3 : sc), 4); ctx.fill() }
@@ -100,7 +100,7 @@ Item {
                 return
             }
             if (k === "mode") {
-                var glyph = { note: "Aa", quote: "“ ”", greeting: "Hi!", countdown: "12d", since: "+3d" }[o] || ""
+                const glyph = { note: "Aa", quote: "“ ”", greeting: "Hi!", countdown: "12d", since: "+3d" }[o] || ""
                 D.text(ctx, glyph, width / 2, height / 2 + 8, { px: 22, weight: 500, family: root.svc ? root.svc.fonts.serif : "", base: "alphabetic", color: D.rgba(ink, 1) })
                 return
             }
@@ -113,8 +113,8 @@ Item {
             }
             function other() {
                 if (k === "density") {
-                    var gap = o === "compact" ? 2 : (o === "spacious" ? 9 : 5)
-                    for (var i = 0; i < 4; i++) { ctx.fillStyle = D.rgba(ink, 1); ctx.fillRect(width / 2 - (4 * 9 + 3 * gap) / 2 + i * (9 + gap), 19, 9, 2) }
+                    const gap = o === "compact" ? 2 : (o === "spacious" ? 9 : 5)
+                    for (let i = 0; i < 4; i++) { ctx.fillStyle = D.rgba(ink, 1); ctx.fillRect(width / 2 - (4 * 9 + 3 * gap) / 2 + i * (9 + gap), 19, 9, 2) }
                 } else {
                     ctx.fillStyle = D.rgba(soft, 1); ctx.fillRect(4, 2, 60, 5)
                     ctx.fillStyle = D.rgba(ink, 1)
@@ -122,22 +122,22 @@ Item {
                 }
             }
             function style() {
-                var w = root.context
-                var kind = Kinds.kindOf(w.kind)
-                var entry = kind ? kind.styles.byKey[o] : null
+                const w = root.context
+                const kind = Kinds.kindOf(w.kind)
+                const entry = kind ? kind.styles.byKey[o] : null
                 if (!entry) return
-                var probe = JSON.parse(JSON.stringify(w)); probe.style = o; probe.stretch = 100
-                var asp = Kinds.aspectOf(probe)
-                var bw = width, bh = height
+                const probe = JSON.parse(JSON.stringify(w)); probe.style = o; probe.stretch = 100
+                const asp = Kinds.aspectOf(probe)
+                let bw = width, bh = height
                 if (asp > bw / bh) bh = bw / asp; else bw = bh * asp
                 ctx.save()
                 ctx.translate((width - bw) / 2, (height - bh) / 2)
-                var t = Stage.timeParts(new Date(2026, 9, 16, 10, 8, 37))
-                var data = {}
+                const t = Stage.timeParts(new Date(2026, 9, 16, 10, 8, 37))
+                let data = {}
                 if (w.kind === "system") data = { meters: root.sampleMeters.slice(0, Math.max(1, Math.min(3, (w.metrics || []).length))) }
                 else if (w.kind === "media") data = root.sampleMedia
                 else if (w.kind === "text") data = Kinds.noteData(w, new Date(), t.doy)
-                var g = Stage.build(ctx, bw, bh, {
+                const g = Stage.build(ctx, bw, bh, {
                     t: t, a: 1, o: probe, c: { ink: ink, accent: root.on ? ink : root.rgb(root.ui.accent), accent2: ink, bg: bg }, card: false,
                     font: root.svc ? root.svc.mainFont : "", weight: root.svc ? root.svc.cfg.weight : 300,
                     fonts: root.svc ? root.svc.fonts : undefined, sweep: false, data: data, prevTexts: []

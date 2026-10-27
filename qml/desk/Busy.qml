@@ -19,7 +19,7 @@ Item {
     readonly property var workspace: root.monitor ? root.monitor.activeWorkspace : null
 
     readonly property bool hide: {
-        var ws = root.workspace
+        const ws = root.workspace
         if (!ws) return false
         try {
             if (root.mode === "nofull") return ws.hasFullscreen === true
@@ -33,7 +33,7 @@ Item {
         target: root.mode === "always" ? null : Hyprland
         ignoreUnknownSignals: true
         function onRawEvent(event) {
-            var name = event ? "" + event.name : ""
+            const name = event ? "" + event.name : ""
             if (name === "fullscreen") try { Hyprland.refreshWorkspaces() } catch (e) { }
         }
     }

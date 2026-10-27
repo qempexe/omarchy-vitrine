@@ -30,7 +30,7 @@ Item {
     readonly property var widgets: cfg.widgets
 
     function setValue(key, value) {
-        var v = Schema.clean(key, value)
+        const v = Schema.clean(key, value)
         if (v === undefined) return
         if (key === "colorMode" && root.cfg.presetColors !== "") settingsStore.setMany({ colorMode: v, presetColors: "" })
         else settingsStore.set(key, v)
@@ -55,8 +55,8 @@ Item {
     // the widget the panel is showing the settings of
     property string selected: ""
     readonly property var screenNames: {
-        var out = []
-        for (var i = 0; i < Quickshell.screens.length; i++) out.push(Quickshell.screens[i].name)
+        const out = []
+        for (let i = 0; i < Quickshell.screens.length; i++) out.push(Quickshell.screens[i].name)
         return out
     }
 
@@ -70,10 +70,10 @@ Item {
     function num(v, f) { return typeof v === "number" && isFinite(v) ? v : f }
     // name, a label with the model, and where it sits in the layout of all screens
     readonly property var screenList: {
-        var out = []
-        for (var i = 0; i < Quickshell.screens.length; i++) {
-            var s = Quickshell.screens[i]
-            var model = ""
+        const out = []
+        for (let i = 0; i < Quickshell.screens.length; i++) {
+            const s = Quickshell.screens[i]
+            let model = ""
             try { model = s.model || "" } catch (e) { model = "" }
             out.push({ name: s.name, label: s.name + (model ? " \u00b7 " + model : ""),
                        x: root.num(s.x, root.num(s.virtualX, 0)), y: root.num(s.y, root.num(s.virtualY, 0)),
@@ -82,7 +82,7 @@ Item {
         return out
     }
     function screenInfo(name) {
-        for (var i = 0; i < root.screenList.length; i++) if (root.screenList[i].name === name) return root.screenList[i]
+        for (let i = 0; i < root.screenList.length; i++) if (root.screenList[i].name === name) return root.screenList[i]
         return null
     }
     readonly property string mainName: Screens.mainOf(root.cfg.mainScreen, root.screenNames)
@@ -98,9 +98,9 @@ Item {
     // a widget onto another screen, at x, y (thousandths) there. Widgets on every
     // screen stay on every screen; the main screen is saved as "" so it follows it
     function moveToScreen(id, name, x, y) {
-        var w = root.widgetById(id)
+        const w = root.widgetById(id)
         if (!w || root.screenNames.indexOf(name) === -1) return false
-        var set = {}
+        const set = {}
         if (w.screen !== "*") set.screen = Screens.savedAs(w, name, root.mainName)
         if (typeof x === "number") set.x = Math.max(0, Math.min(1000, Math.round(x)))
         if (typeof y === "number") set.y = Math.max(0, Math.min(1000, Math.round(y)))
@@ -112,7 +112,7 @@ Item {
     function screenAt(gx, gy) { return Screens.at(root.screenList, gx, gy) }
     // a widget's middle at (lx, ly) on screen `from` lands where on screen `to`
     function carry(from, to, lx, ly) {
-        var a = root.screenInfo(from), b = root.screenInfo(to)
+        const a = root.screenInfo(from), b = root.screenInfo(to)
         return a && b ? Screens.carry(a, b, lx, ly) : null
     }
 
@@ -142,7 +142,7 @@ Item {
     readonly property var borderColors: luaBorder.colors.length > 0 ? luaBorder.colors : confBorder.colors
     readonly property real borderAngle: luaBorder.colors.length > 0 ? luaBorder.angle : confBorder.angle
     function fileText(fv) {
-        try { var t = typeof fv.text === "function" ? fv.text() : fv.text; return typeof t === "string" ? t : "" } catch (e) { return "" }
+        try { const t = typeof fv.text === "function" ? fv.text() : fv.text; return typeof t === "string" ? t : "" } catch (e) { return "" }
     }
     FileView {
         id: borderLua
@@ -205,13 +205,13 @@ Item {
         command: ["fc-list", ":", "family"]
         stdout: StdioCollector {
             onStreamFinished: {
-                var seen = {}, out = []
-                var lines = (text || "").split("\n")
-                for (var i = 0; i < lines.length && out.length < 3000; i++) {
-                    var name = lines[i].split(",")[0].trim()
+                const seen = {}, out = []
+                const lines = (text || "").split("\n")
+                for (let i = 0; i < lines.length && out.length < 3000; i++) {
+                    const name = lines[i].split(",")[0].trim()
                     if (name && /^[A-Za-z0-9 _.\-]{1,80}$/.test(name) && !seen[name]) { seen[name] = true; out.push(name) }
                 }
-                out.sort(function(a, b) { return a.toLowerCase() < b.toLowerCase() ? -1 : 1 })
+                out.sort((a, b) => a.toLowerCase() < b.toLowerCase() ? -1 : 1)
                 root.systemFonts = out
             }
         }
@@ -229,15 +229,15 @@ Item {
         triggeredOnStart: true
         onTriggered: {
             root.now = new Date()
-            var ms = root.now.getMilliseconds()
+            const ms = root.now.getMilliseconds()
             tick.interval = Math.max(200, 1000 - ms + 5)
         }
     }
 
     function kindsShown(kind) {
         if (!root.cfg.enabled) return []
-        var out = []
-        for (var i = 0; i < root.widgets.length; i++) if (root.widgets[i].kind === kind) out.push(root.widgets[i])
+        const out = []
+        for (let i = 0; i < root.widgets.length; i++) if (root.widgets[i].kind === kind) out.push(root.widgets[i])
         return out
     }
     readonly property var systemWidgets: kindsShown("system")
@@ -248,20 +248,20 @@ Item {
         id: sys
         active: root.systemWidgets.length > 0
         interval: {
-            var n = 30
-            for (var i = 0; i < root.systemWidgets.length; i++) n = Math.min(n, root.systemWidgets[i].every)
+            let n = 30
+            for (let i = 0; i < root.systemWidgets.length; i++) n = Math.min(n, root.systemWidgets[i].every)
             return n
         }
         diskPaths: {
-            var out = []
-            for (var i = 0; i < root.systemWidgets.length; i++) if (out.indexOf(root.systemWidgets[i].path) === -1) out.push(root.systemWidgets[i].path)
+            const out = []
+            for (let i = 0; i < root.systemWidgets.length; i++) if (out.indexOf(root.systemWidgets[i].path) === -1) out.push(root.systemWidgets[i].path)
             return out.length > 0 ? out : ["/"]
         }
         wantsDisk: root.metricShown("disk")
         wantsTemp: root.metricShown("temp")
     }
     function metricShown(key) {
-        for (var i = 0; i < root.systemWidgets.length; i++) if (root.systemWidgets[i].metrics.indexOf(key) !== -1) return true
+        for (let i = 0; i < root.systemWidgets.length; i++) if (root.systemWidgets[i].metrics.indexOf(key) !== -1) return true
         return false
     }
     property alias system: sys
@@ -272,8 +272,8 @@ Item {
     Zones {
         id: zones
         zones: {
-            var out = []
-            for (var i = 0; i < root.clockWidgets.length; i++) if (root.clockWidgets[i].zone !== "") out.push(root.clockWidgets[i].zone)
+            const out = []
+            for (let i = 0; i < root.clockWidgets.length; i++) if (root.clockWidgets[i].zone !== "") out.push(root.clockWidgets[i].zone)
             return out
         }
     }
@@ -282,33 +282,33 @@ Item {
     // ---- widgets ----------------------------------------------------------------------
 
     function widgetById(id) {
-        for (var i = 0; i < root.widgets.length; i++) if (root.widgets[i].id === id) return root.widgets[i]
+        for (let i = 0; i < root.widgets.length; i++) if (root.widgets[i].id === id) return root.widgets[i]
         return null
     }
     function indexOf(id) {
-        for (var i = 0; i < root.widgets.length; i++) if (root.widgets[i].id === id) return i
+        for (let i = 0; i < root.widgets.length; i++) if (root.widgets[i].id === id) return i
         return -1
     }
     function copyList() { return JSON.parse(JSON.stringify(root.widgets)) }
 
     // change some of one widget's settings
     function patchWidget(id, set) {
-        var list = root.copyList(), i = root.indexOf(id)
+        const list = root.copyList(), i = root.indexOf(id)
         if (i < 0) return false
-        for (var k in set) list[i][k] = set[k]
+        for (const k in set) list[i][k] = set[k]
         root.setValue("widgets", list)
         return true
     }
-    function updateWidget(id, key, value) { var s = {}; s[key] = value; return root.patchWidget(id, s) }
+    function updateWidget(id, key, value) { const s = {}; s[key] = value; return root.patchWidget(id, s) }
 
     // a new widget, in the middle of the screen (or at x, y in thousandths)
     function addWidget(kind, screenName, x, y) {
         if (root.widgets.length >= Kinds.MAX_WIDGETS) return ""
-        var list = root.copyList()
-        var id = Kinds.nextId(list)
-        var set = { x: typeof x === "number" ? x : 500, y: typeof y === "number" ? y : 450 }
+        const list = root.copyList()
+        const id = Kinds.nextId(list)
+        const set = { x: typeof x === "number" ? x : 500, y: typeof y === "number" ? y : 450 }
         if (typeof screenName === "string") set.screen = screenName
-        var w = Kinds.make(kind, id, set)
+        const w = Kinds.make(kind, id, set)
         if (!w) return ""
         list.push(w)
         root.setValue("widgets", list)
@@ -316,10 +316,10 @@ Item {
         return id
     }
     function duplicateWidget(id) {
-        var w = root.widgetById(id)
+        const w = root.widgetById(id)
         if (!w || root.widgets.length >= Kinds.MAX_WIDGETS) return ""
-        var list = root.copyList()
-        var copy = JSON.parse(JSON.stringify(w))
+        const list = root.copyList()
+        const copy = JSON.parse(JSON.stringify(w))
         copy.id = Kinds.nextId(list)
         copy.x = Math.min(1000, w.x + 30); copy.y = Math.min(1000, w.y + 30)
         list.push(copy)
@@ -328,7 +328,7 @@ Item {
         return copy.id
     }
     function removeWidget(id) {
-        var list = root.copyList(), i = root.indexOf(id)
+        const list = root.copyList(), i = root.indexOf(id)
         if (i < 0) return false
         list.splice(i, 1)
         root.setValue("widgets", list)
@@ -337,9 +337,9 @@ Item {
     }
     // up the list = drawn later = on top
     function moveWidget(id, step) {
-        var list = root.copyList(), i = root.indexOf(id), j = i + step
+        const list = root.copyList(), i = root.indexOf(id), j = i + step
         if (i < 0 || j < 0 || j >= list.length) return false
-        var t = list[i]; list[i] = list[j]; list[j] = t
+        const t = list[i]; list[i] = list[j]; list[j] = t
         root.setValue("widgets", list)
         return true
     }
@@ -351,8 +351,8 @@ Item {
     function replay() { root.appearSerial++ }
 
     function resetAll() {
-        var next = {}
-        for (var k in Schema.defaults) next[k] = Schema.defaults[k]
+        const next = {}
+        for (const k in Schema.defaults) next[k] = Schema.defaults[k]
         next.savedLooks = root.cfg.savedLooks
         settingsStore.resetAll(next)
         root.replay()
@@ -361,20 +361,20 @@ Item {
     // a look starts from the defaults, so nothing from the last one lingers;
     // the panel's own settings stay, and so do your widgets when Keep my widgets is on
     function applyPreset(key) {
-        var p = Schema.presetFor(Util.toText(key))
+        const p = Schema.presetFor(Util.toText(key))
         if (!p) return false
-        var keepWidgets = root.cfg.keepWidgets === true
-        var look = {}
-        for (var i = 0; i < Schema.lookKeys.length; i++) {
-            var k = Schema.lookKeys[i]
+        const keepWidgets = root.cfg.keepWidgets === true
+        const look = {}
+        for (let i = 0; i < Schema.lookKeys.length; i++) {
+            const k = Schema.lookKeys[i]
             look[k] = k === "widgets" ? (keepWidgets ? root.cfg.widgets : Schema.defaults.widgets) : Schema.defaults[k]
         }
         // colors you chose yourself stay yours
-        var keepColors = ["colorMode", "customBg", "customFg", "accentColor"]
-        for (var c = 0; c < keepColors.length; c++) look[keepColors[c]] = root.cfg[keepColors[c]]
+        const keepColors = ["colorMode", "customBg", "customFg", "accentColor"]
+        for (let c = 0; c < keepColors.length; c++) look[keepColors[c]] = root.cfg[keepColors[c]]
         if (root.cfg.presetColors !== "" && look.colorMode === root.cfg.presetColors) look.colorMode = "theme"
-        var set = Schema.cleanLook(p.set)
-        for (var s in set) {
+        const set = Schema.cleanLook(p.set)
+        for (const s in set) {
             if (s === "widgets" && keepWidgets) continue
             look[s] = set[s]
         }
@@ -388,14 +388,14 @@ Item {
         return true
     }
     function nextLook() {
-        var i = -1
-        for (var k = 0; k < Schema.presets.length; k++) if (Schema.presets[k].key === root.cfg.lastLook) i = k
+        let i = -1
+        for (let k = 0; k < Schema.presets.length; k++) if (Schema.presets[k].key === root.cfg.lastLook) i = k
         root.applyPreset(Schema.presets[(i + 1) % Schema.presets.length].key)
     }
     readonly property bool canUndo: root.cfg.undoLook !== null
     function undoLook() {
         if (!root.cfg.undoLook) return false
-        var look = Schema.cleanLookAll(root.cfg.undoLook)
+        const look = Schema.cleanLookAll(root.cfg.undoLook)
         look.undoLook = null
         look.lastLook = ""
         settingsStore.setMany(look)
@@ -406,19 +406,19 @@ Item {
     function slotOk(i) { return typeof i === "number" && i >= 0 && i < Schema.LOOK_SLOTS && Math.round(i) === i }
     function saveLook(i) {
         if (!slotOk(i)) return false
-        var looks = root.cfg.savedLooks.slice()
+        const looks = root.cfg.savedLooks.slice()
         looks[i] = Schema.lookOf(root.cfg)
         root.setValue("savedLooks", looks)
         return true
     }
     function freeLook() {
-        for (var i = 0; i < Schema.LOOK_SLOTS; i++) if (!root.cfg.savedLooks[i]) return i
+        for (let i = 0; i < Schema.LOOK_SLOTS; i++) if (!root.cfg.savedLooks[i]) return i
         return -1
     }
-    function saveFreeLook() { var i = root.freeLook(); return i >= 0 && root.saveLook(i) ? i : -1 }
+    function saveFreeLook() { const i = root.freeLook(); return i >= 0 && root.saveLook(i) ? i : -1 }
     function loadLook(i) {
         if (!slotOk(i) || !root.cfg.savedLooks[i]) return false
-        var look = Schema.cleanLook(root.cfg.savedLooks[i])
+        const look = Schema.cleanLook(root.cfg.savedLooks[i])
         look.undoLook = Schema.lookOf(root.cfg)
         look.enabled = true
         settingsStore.setMany(look)
@@ -427,14 +427,14 @@ Item {
     }
     function clearLook(i) {
         if (!slotOk(i)) return false
-        var looks = root.cfg.savedLooks.slice()
+        const looks = root.cfg.savedLooks.slice()
         looks[i] = null
         root.setValue("savedLooks", looks)
         return true
     }
     function exportLook() { return JSON.stringify(Schema.lookOf(root.cfg)) }
     function importLook(text) {
-        var look = Schema.parseLook(text)
+        const look = Schema.parseLook(text)
         if (!look) return false
         settingsStore.setMany(look)
         root.replay()
@@ -476,19 +476,19 @@ Item {
         function show(): string { root.setValue("enabled", true); return "on" }
         function hide(): string { root.setValue("enabled", false); return "off" }
         function arrange(): string { root.arrange(); return root.arranging ? "arranging" : "done" }
-        function add(kind: string): string { var id = root.addWidget(kind); return id !== "" ? "added " + id : "kinds: clock date system media text" }
+        function add(kind: string): string { const id = root.addWidget(kind); return id !== "" ? "added " + id : "kinds: clock date system media text" }
         function look(name: string): string { return root.applyPreset(name) ? name : "unknown look" }
         function next(): string { root.nextLook(); return root.cfg.lastLook }
         function undo(): string { return root.undoLook() ? "ok" : "nothing to undo" }
         function save(slot: int): string { return root.saveLook(slot - 1) ? "saved in " + slot : "places are 1 to " + Schema.LOOK_SLOTS }
-        function saveNew(): string { var i = root.saveFreeLook(); return i >= 0 ? "saved in " + (i + 1) : "all " + Schema.LOOK_SLOTS + " places are taken" }
+        function saveNew(): string { const i = root.saveFreeLook(); return i >= 0 ? "saved in " + (i + 1) : "all " + Schema.LOOK_SLOTS + " places are taken" }
         function load(slot: int): string { return root.loadLook(slot - 1) ? "loaded " + slot : "nothing saved there" }
         function exportLook(): string { return root.exportLook() }
         function importLook(json: string): string { return root.importLook(json) ? "ok" : "not a Vitrine look" }
         function screens(): string { return JSON.stringify({ main: root.mainName, screens: root.screenList }) }
         function addOn(kind: string, screen: string): string {
             if (screen !== "" && screen !== "*" && root.screenNames.indexOf(screen) === -1) return "no screen called " + screen
-            var id = root.addWidget(kind, screen === root.mainName ? "" : screen)
+            const id = root.addWidget(kind, screen === root.mainName ? "" : screen)
             return id !== "" ? "added " + id : "kinds: clock date system media text"
         }
         function moveTo(id: string, screen: string): string {

@@ -16,19 +16,19 @@ Item {
     // the ids of the widgets on a screen, in drawing order (the service decides which
     // screen a widget is on, unplugged screens included)
     function idsFor(screen) {
-        var out = []
+        const out = []
         if (!root.cfg || !screen) return out
-        var ws = root.cfg.widgets
-        for (var i = 0; i < ws.length; i++) if (root.svc.shows(ws[i], screen.name)) out.push(ws[i].id)
+        const ws = root.cfg.widgets
+        for (let i = 0; i < ws.length; i++) if (root.svc.shows(ws[i], screen.name)) out.push(ws[i].id)
         return out
     }
     // brings a ListModel of { wid } in line with ids, moving rows rather than making
     // them again, so a widget is only built when it is added
     function sync(model, ids) {
-        for (var i = 0; i < ids.length; i++) {
+        for (let i = 0; i < ids.length; i++) {
             if (i < model.count && model.get(i).wid === ids[i]) continue
-            var found = -1
-            for (var j = i + 1; j < model.count; j++) if (model.get(j).wid === ids[i]) { found = j; break }
+            let found = -1
+            for (let j = i + 1; j < model.count; j++) if (model.get(j).wid === ids[i]) { found = j; break }
             if (found >= 0) model.move(found, i, 1)
             else model.insert(i, { wid: ids[i] })
         }

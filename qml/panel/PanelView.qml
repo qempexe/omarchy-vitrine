@@ -56,15 +56,15 @@ Item {
         onHeightChanged: requestPaint()
         onVisibleChanged: if (visible) requestPaint()
         onPaint: {
-            var ctx = getContext("2d")
+            const ctx = getContext("2d")
             ctx.reset()
-            var n = stops.length
+            const n = stops.length
             if (!visible || n < 2 || width < 4 || height < 4) return
-            var a = angle * Math.PI / 180, dx = Math.cos(a), dy = Math.sin(a)
-            var half = (Math.abs(dx) * width + Math.abs(dy) * height) / 2
-            var g = ctx.createLinearGradient(width / 2 - dx * half, height / 2 - dy * half, width / 2 + dx * half, height / 2 + dy * half)
-            for (var i = 0; i < n; i++) g.addColorStop(i / (n - 1), stops[i])
-            var r = Math.max(0, Math.min(rad, width / 2, height / 2)), x = 0.5, y = 0.5, w = width - 1, h = height - 1
+            const a = angle * Math.PI / 180, dx = Math.cos(a), dy = Math.sin(a)
+            const half = (Math.abs(dx) * width + Math.abs(dy) * height) / 2
+            const g = ctx.createLinearGradient(width / 2 - dx * half, height / 2 - dy * half, width / 2 + dx * half, height / 2 + dy * half)
+            for (let i = 0; i < n; i++) g.addColorStop(i / (n - 1), stops[i])
+            const r = Math.max(0, Math.min(rad, width / 2, height / 2)), x = 0.5, y = 0.5, w = width - 1, h = height - 1
             ctx.strokeStyle = g
             ctx.lineWidth = 1
             ctx.beginPath()

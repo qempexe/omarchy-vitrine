@@ -36,8 +36,8 @@ BarWidget {
     readonly property var clickNames: ({ arrange: "arrange", next: "next look", toggle: "show / hide", none: "" })
     readonly property string tooltip: {
         if (!cfg) return "Vitrine"
-        var head = "Vitrine: " + (cfg.enabled ? cfg.widgets.length + (cfg.widgets.length === 1 ? " widget" : " widgets") : "hidden")
-        var parts = ["left click settings"]
+        const head = "Vitrine: " + (cfg.enabled ? cfg.widgets.length + (cfg.widgets.length === 1 ? " widget" : " widgets") : "hidden")
+        const parts = ["left click settings"]
         if (cfg.rightClick !== "none") parts.push("right click " + clickNames[cfg.rightClick])
         if (cfg.middleClick !== "none") parts.push("middle click " + clickNames[cfg.middleClick])
         return head + "\n" + parts.join(" · ")
@@ -62,7 +62,7 @@ BarWidget {
 
     function chooseMode() {
         if (userPicked || !cfg) return
-        var want = cfg.openAs === "window"
+        const want = cfg.openAs === "window"
         if (want === popped) return
         if (windowShown) hideWindow()
         if (panelOpened) closePanel()
@@ -168,7 +168,7 @@ BarWidget {
         function onTabRequested(name, toggle) {
             if (!root.ux.host) root.ux.host = root
             if (root.ux.host !== root) return
-            var shown = root.panelOpened || root.windowShown
+            const shown = root.panelOpened || root.windowShown
             if (toggle && shown && root.ux.tabName === name) root.close()
             else root.showTab(name)
         }

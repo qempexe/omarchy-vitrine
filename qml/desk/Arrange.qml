@@ -25,24 +25,24 @@ Item {
     }
 
     function idsFor(screen) {
-        var out = []
+        const out = []
         if (!root.cfg || !screen) return out
-        var ws = root.cfg.widgets
-        for (var i = 0; i < ws.length; i++) if (root.svc.shows(ws[i], screen.name)) out.push(ws[i].id)
+        const ws = root.cfg.widgets
+        for (let i = 0; i < ws.length; i++) if (root.svc.shows(ws[i], screen.name)) out.push(ws[i].id)
         return out
     }
     readonly property bool manyScreens: root.svc !== null && root.svc.screenList.length > 1
     function sendToNext(id) {
-        var next = root.svc.nextScreenOf(id)
-        var w = root.svc.widgetById(id)
+        const next = root.svc.nextScreenOf(id)
+        const w = root.svc.widgetById(id)
         if (next !== "" && w && w.screen !== "*") root.svc.moveToScreen(id, next)
     }
 
     function sync(model, ids) {
-        for (var i = 0; i < ids.length; i++) {
+        for (let i = 0; i < ids.length; i++) {
             if (i < model.count && model.get(i).wid === ids[i]) continue
-            var found = -1
-            for (var j = i + 1; j < model.count; j++) if (model.get(j).wid === ids[i]) { found = j; break }
+            let found = -1
+            for (let j = i + 1; j < model.count; j++) if (model.get(j).wid === ids[i]) { found = j; break }
             if (found >= 0) model.move(found, i, 1)
             else model.insert(i, { wid: ids[i] })
         }
@@ -50,7 +50,7 @@ Item {
     }
 
     function nudge(dx, dy) {
-        var w = root.svc.widgetById(root.svc.selected)
+        const w = root.svc.widgetById(root.svc.selected)
         if (!w) return
         root.svc.patchWidget(w.id, { x: Math.max(0, Math.min(1000, w.x + dx)), y: Math.max(0, Math.min(1000, w.y + dy)) })
     }
@@ -61,9 +61,9 @@ Item {
         root.svc.ui.tabRequested("settings", false)
     }
     function selectNext() {
-        var ws = root.cfg.widgets
+        const ws = root.cfg.widgets
         if (ws.length === 0) return
-        var i = root.svc.indexOf(root.svc.selected)
+        const i = root.svc.indexOf(root.svc.selected)
         root.svc.selected = ws[(i + 1) % ws.length].id
     }
 
@@ -98,7 +98,7 @@ Item {
                     focus: win.keys
 
                     Keys.onPressed: function(e) {
-                        var big = (e.modifiers & Qt.ShiftModifier) ? 10 : 1
+                        const big = (e.modifiers & Qt.ShiftModifier) ? 10 : 1
                         if (e.key === Qt.Key_Escape || e.key === Qt.Key_Return || e.key === Qt.Key_Enter) root.svc.arrange(false)
                         else if (e.key === Qt.Key_Delete || e.key === Qt.Key_Backspace) { if (root.svc.selected !== "") root.svc.removeWidget(root.svc.selected) }
                         else if (e.key === Qt.Key_Left) root.nudge(-big, 0)
@@ -126,11 +126,11 @@ Item {
                         onWidthChanged: requestPaint()
                         onHeightChanged: requestPaint()
                         onPaint: {
-                            var ctx = getContext("2d")
+                            const ctx = getContext("2d")
                             ctx.reset()
                             ctx.fillStyle = Qt.rgba(ink.r, ink.g, ink.b, 0.10)
-                            for (var x = step; x < width; x += step) ctx.fillRect(x, 0, 1, height)
-                            for (var y = step; y < height; y += step) ctx.fillRect(0, y, width, 1)
+                            for (let x = step; x < width; x += step) ctx.fillRect(x, 0, 1, height)
+                            for (let y = step; y < height; y += step) ctx.fillRect(0, y, width, 1)
                             ctx.fillStyle = Qt.rgba(ink.r, ink.g, ink.b, 0.22)
                             ctx.fillRect(Math.round(width / 2), 0, 1, height)
                             ctx.fillRect(0, Math.round(height / 2), width, 1)
@@ -203,17 +203,17 @@ Item {
                                 onPositionChanged: function(m) {
                                     if (!pressed) return
                                     moved = true
-                                    var p = mapToItem(stage, m.x, m.y)
-                                    var cx = p.x - grabX, cy = p.y - grabY
+                                    const p = mapToItem(stage, m.x, m.y)
+                                    let cx = p.x - grabX, cy = p.y - grabY
                                     // past this screen's edge: which screen is the pointer over?
                                     target = ""
                                     if (win.info && (p.x < 0 || p.y < 0 || p.x >= stage.width || p.y >= stage.height)) {
-                                        var t = root.svc.screenAt(win.info.x + p.x, win.info.y + p.y)
-                                        var to = t !== "" && t !== win.modelData.name ? root.svc.carry(win.modelData.name, t, cx, cy) : null
+                                        const t = root.svc.screenAt(win.info.x + p.x, win.info.y + p.y)
+                                        const to = t !== "" && t !== win.modelData.name ? root.svc.carry(win.modelData.name, t, cx, cy) : null
                                         if (to) { target = t; targetX = to.x; targetY = to.y }
                                     }
                                     if (root.cfg.snap && !(m.modifiers & Qt.ShiftModifier)) {
-                                        var step = root.cfg.grid
+                                        const step = root.cfg.grid
                                         cx = Math.round((cx - view.width / 2) / step) * step + view.width / 2
                                         cy = Math.round((cy - view.height / 2) / step) * step + view.height / 2
                                     }
@@ -256,8 +256,8 @@ Item {
                                     }
                                     onPositionChanged: function(m) {
                                         if (!pressed) return
-                                        var dy = mapToItem(stage, m.x, m.y).y - startY
-                                        var k = Math.max(0.1, (startH + dy * 2) / startH)
+                                        const dy = mapToItem(stage, m.x, m.y).y - startY
+                                        const k = Math.max(0.1, (startH + dy * 2) / startH)
                                         view.dragSize = Math.max(30, Math.min(900, Math.round(startSize * k / 5) * 5))
                                     }
                                     onReleased: {

@@ -45,8 +45,8 @@ Item {
     // the panel outline: the window border's gradient, or one color from it, or the accent
     readonly property bool frameGradientOn: frameOn && cfgSafe.panelFrameGradient !== false && borderColors.length > 1
     readonly property color frameColor: {
-        var n = borderColors.length
-        var pick = cfgSafe.panelFrameColor
+        const n = borderColors.length
+        const pick = cfgSafe.panelFrameColor
         if (n === 0 || pick === "accent" || !pick) return accent
         if (pick === "first") return Qt.color(borderColors[0])
         if (pick === "last") return Qt.color(borderColors[n - 1])
@@ -83,7 +83,7 @@ Item {
         if (name === "custom")
             return { bg: hexOr(cfgSafe.customBg, "#141414"), fg: hexOr(cfgSafe.customFg, "#e0e0e0"), ac: hexOr(cfgSafe.accentColor, "#ff6a1f") }
         if (name === "monochrome") {
-            var g = grey(lumOf(barSurface))
+            const g = grey(lumOf(barSurface))
             return { bg: g, fg: contrast(g), ac: contrast(g) }
         }
         if (name === "borders" && borderColors.length > 0)

@@ -28,7 +28,7 @@ Item {
     readonly property var style: w ? Kinds.styleOf(w) : null
     readonly property var shown: {
         if (!w) return null
-        if (isFinite(root.dragSize)) { var c = JSON.parse(JSON.stringify(w)); c.size = root.dragSize; return c }
+        if (isFinite(root.dragSize)) { const c = JSON.parse(JSON.stringify(w)); c.size = root.dragSize; return c }
         return w
     }
     readonly property var colors: cfg && shown ? Look.colorsFor(cfg, svc.theme, shown, index, shown.x / 1000) : null
@@ -108,7 +108,7 @@ Item {
         onWidthChanged: requestPaint()
         onHeightChanged: requestPaint()
         onPaint: {
-            var ctx = getContext("2d")
+            const ctx = getContext("2d")
             ctx.reset()
             if (root.cardKey === "") return
             Card.paint(ctx, Look.cardParams(root.cfg, root.svc.theme, root.colors, width, height, root.margin))
@@ -136,14 +136,14 @@ Item {
     // the clock's digits as they show now: hours, minutes, seconds
     function texts(t) {
         if (!w || w.kind !== "clock") return []
-        var h = w.h24 ? t.h : D.hour12(t.h)
+        const h = w.h24 ? t.h : D.hour12(t.h)
         return [w.lead ? D.pad2(h) : "" + h, D.pad2(t.m), D.pad2(t.s)]
     }
 
     // what the widget is showing: when this changes, it is painted again
     readonly property string stamp: {
         if (!w || !style) return ""
-        var tt = root.t
+        const tt = root.t
         if (w.kind === "clock") return tt.y + "-" + tt.doy + " " + tt.h + ":" + tt.m + (root.showsSeconds ? ":" + tt.s : "")
         if (w.kind === "system") return "s" + (svc ? svc.system.serial : 0)
         if (w.kind === "media") return "m" + (svc ? svc.media.serial : 0) + (art.ready ? "a" : "")
@@ -159,7 +159,7 @@ Item {
     property real anim: 1
     NumberAnimation { id: flipAnim; target: root; property: "anim"; from: 0; to: 1; duration: root.style && root.style.animMs ? root.style.animMs : 400 }
     onStampChanged: {
-        var now = root.texts(root.t)
+        const now = root.texts(root.t)
         if (root.style && root.style.animMs && root.cfg && root.cfg.flipMotion && root.cfg.speed > 0
                 && root.lastTexts.length > 0 && JSON.stringify(now) !== JSON.stringify(root.lastTexts)) {
             root.prevTexts = root.lastTexts
@@ -179,7 +179,7 @@ Item {
     }
     readonly property var mediaNow: w && w.kind === "media" && svc ? (svc.media.serial, svc.media.dataFor(w.player)) : null
     onMediaNowChanged: {
-        var u = root.mediaNow && root.mediaNow.artUrl ? root.mediaNow.artUrl : ""
+        let u = root.mediaNow && root.mediaNow.artUrl ? root.mediaNow.artUrl : ""
         if (!/^(file|https?):\/\//.test(u)) u = ""
         if (u === art.url) return
         if (art.url !== "") content.unloadImage(art.url)
@@ -196,7 +196,7 @@ Item {
         if (!w) return {}
         if (w.kind === "system") return { meters: svc ? svc.system.metersFor(w) : [] }
         if (w.kind === "media") {
-            var m = root.mediaNow || { has: false }
+            const m = root.mediaNow || { has: false }
             return { has: m.has, title: m.title, artist: m.artist, album: m.album, art: art.ready ? art.url : "",
                      pos: m.pos, len: m.len, playing: m.playing, player: m.player }
         }
@@ -226,11 +226,11 @@ Item {
             onHeightChanged: requestPaint()
             onVisibleChanged: if (visible) requestPaint()
             onPaint: {
-                var ctx = getContext("2d")
+                const ctx = getContext("2d")
                 ctx.reset()
                 if (!root.style || !root.colors || !root.svc) return
-                var t = root.sweeping ? Stage.timeParts(new Date(), root.zoneOffset) : root.t
-                var g = Stage.build(ctx, root.c.w, root.c.h, {
+                const t = root.sweeping ? Stage.timeParts(new Date(), root.zoneOffset) : root.t
+                const g = Stage.build(ctx, root.c.w, root.c.h, {
                     t: t, a: root.anim, o: root.w, c: root.colors, card: root.box.card,
                     font: root.svc.mainFont, weight: root.cfg.weight, fonts: root.svc.fonts,
                     sweep: root.sweeping, names: root.names, data: root.dataFor(t), prevTexts: root.prevTexts
@@ -239,7 +239,7 @@ Item {
                 try { root.style.draw(g) } catch (e) { console.warn("Vitrine: " + root.w.kind + " " + root.w.style + ": " + e) }
                 ctx.restore()
                 if (root.box.captionH > 0) {
-                    var px = root.box.captionH * 0.7
+                    const px = root.box.captionH * 0.7
                     D.text(ctx, root.w.caption, width / 2, height - root.box.captionH * 0.22,
                            { px: px, weight: 500, family: root.svc.mainFont, base: "alphabetic", color: g.col("ink", 0.7), spacing: 0.06 })
                 }
