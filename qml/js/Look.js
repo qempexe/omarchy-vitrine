@@ -57,8 +57,9 @@ function colorsFor(cfg, th, w, index, xFrac) {
     const card = w ? hasCard(cfg, w) : false;
     let ink;
     if (card) ink = readable(fg, bg);
-    else if (mode === "custom" || mode === "monochrome") ink = fg;
-    else ink = cfg.bareInk === "bar" ? th.barText : (cfg.bareInk === "accent" ? accent : th.fg);
+    else if (mode === "monochrome") ink = fg;
+    // the text color (yours in Custom), the bar's, or the accent (yours in Custom)
+    else ink = cfg.bareInk === "bar" ? th.barText : (cfg.bareInk === "accent" ? accent : fg);
     return { ink, accent, accent2, bg, card };
 }
 
