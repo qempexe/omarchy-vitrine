@@ -34,7 +34,7 @@ function num(v, fallback) {
 }
 
 function hash(k, seed) {
-    var v = Math.sin(k * 12.9898 + seed * 78.233) * 43758.5453;
+    const v = Math.sin(k * 12.9898 + seed * 78.233) * 43758.5453;
     return v - Math.floor(v);
 }
 
@@ -45,10 +45,10 @@ function volute(ctx, cx, cy, rmax, side, color) {
     ctx.lineWidth = Math.max(0.9, rmax / 6);
     ctx.globalAlpha = 0.85;
     ctx.beginPath();
-    var turns = 2.25 * Math.PI * 2, steps = 48;
-    for (var i = 0; i <= steps; i++) {
-        var t = i / steps, a = t * turns, rr = rmax * (1 - t * 0.85);
-        var px = cx + side * Math.cos(a) * rr, py = cy + Math.sin(a) * rr;
+    const turns = 2.25 * Math.PI * 2, steps = 48;
+    for (let i = 0; i <= steps; i++) {
+        const t = i / steps, a = t * turns, rr = rmax * (1 - t * 0.85);
+        const px = cx + side * Math.cos(a) * rr, py = cy + Math.sin(a) * rr;
         if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
     }
     ctx.stroke();
@@ -56,12 +56,12 @@ function volute(ctx, cx, cy, rmax, side, color) {
 }
 
 function angled(ctx, x0, y0, L, T, angle, colors) {
-    var a = num(angle, 0) * Math.PI / 180;
-    var dx = Math.cos(a), dy = Math.sin(a);
-    var half = (Math.abs(dx) * L + Math.abs(dy) * T) / 2;
-    var cx = x0 + L / 2, cy = y0 + T / 2;
-    var g = ctx.createLinearGradient(cx - dx * half, cy - dy * half, cx + dx * half, cy + dy * half);
-    for (var i = 0; i < colors.length; i++) g.addColorStop(colors.length === 1 ? 0 : i / (colors.length - 1), colors[i]);
+    const a = num(angle, 0) * Math.PI / 180;
+    const dx = Math.cos(a), dy = Math.sin(a);
+    const half = (Math.abs(dx) * L + Math.abs(dy) * T) / 2;
+    const cx = x0 + L / 2, cy = y0 + T / 2;
+    const g = ctx.createLinearGradient(cx - dx * half, cy - dy * half, cx + dx * half, cy + dy * half);
+    for (let i = 0; i < colors.length; i++) g.addColorStop(colors.length === 1 ? 0 : i / (colors.length - 1), colors[i]);
     return g;
 }
 
@@ -69,32 +69,32 @@ function texture(ctx, kind, color, x0, y0, L, T) {
     ctx.fillStyle = color;
     ctx.strokeStyle = color;
     ctx.lineWidth = 1;
-    var step = 6;
+    const step = 6;
     if (kind === "stripes") {
         ctx.beginPath();
-        for (var x = x0 - T; x < x0 + L; x += step) { ctx.moveTo(x, y0 + T); ctx.lineTo(x + T, y0); }
+        for (let x = x0 - T; x < x0 + L; x += step) { ctx.moveTo(x, y0 + T); ctx.lineTo(x + T, y0); }
         ctx.stroke();
     } else if (kind === "dots") {
-        for (var dx = x0 + 3; dx < x0 + L; dx += step)
-            for (var dy = y0 + 3; dy < y0 + T; dy += step) ctx.fillRect(dx, dy, 1, 1);
+        for (let dx = x0 + 3; dx < x0 + L; dx += step)
+            for (let dy = y0 + 3; dy < y0 + T; dy += step) ctx.fillRect(dx, dy, 1, 1);
     } else if (kind === "grid") {
-        for (var gx = x0 + step; gx < x0 + L; gx += step) ctx.fillRect(gx, y0, 1, T);
-        for (var gy = y0 + step; gy < y0 + T; gy += step) ctx.fillRect(x0, gy, L, 1);
+        for (let gx = x0 + step; gx < x0 + L; gx += step) ctx.fillRect(gx, y0, 1, T);
+        for (let gy = y0 + step; gy < y0 + T; gy += step) ctx.fillRect(x0, gy, L, 1);
     }
 }
 
 // the box the widget draws in, inside a card of w x h (with `pad` pixels of room)
 function contentBox(frameKey, w, h, pad, o) {
-    var f = Frames.byKey[frameKey] || Frames.byKey.rounded;
-    var inn = f.inner || {};
-    var side = f.sides ? num(f.sides(w, h, o), 0) : 0;
-    var l = pad + num(inn.l, 0) * w + side, rr = pad + num(inn.r, 0) * w + side;
-    var t = pad + num(inn.t, 0) * h, b = pad + num(inn.b, 0) * h;
+    const f = Frames.byKey[frameKey] || Frames.byKey.rounded;
+    const inn = f.inner || {};
+    const side = f.sides ? num(f.sides(w, h, o), 0) : 0;
+    const l = pad + num(inn.l, 0) * w + side, rr = pad + num(inn.r, 0) * w + side;
+    const t = pad + num(inn.t, 0) * h, b = pad + num(inn.b, 0) * h;
     return { x: l, y: t, w: Math.max(1, w - l - rr), h: Math.max(1, h - t - b) };
 }
 
 function paint(ctx, p) {
-    var W = num(p.width, 0), H = num(p.height, 0);
+    const W = num(p.width, 0), H = num(p.height, 0);
     if (!p.keep) ctx.reset();
     // reset() leaves the line dash as it was: start clean
     if (ctx.setLineDash) ctx.setLineDash([]);
@@ -106,54 +106,55 @@ function paint(ctx, p) {
 }
 
 function draw(ctx, p, W, H) {
-    var m = num(p.margin, 0);
-    var x0 = m, y0 = m, L = W - 2 * m, T = H - 2 * m;
+    const m = num(p.margin, 0);
+    let x0 = m, y0 = m, L = W - 2 * m, T = H - 2 * m;
     if (L < 2 || T < 2) return;
-    var F = Frames.byKey[p.frame] || Frames.byKey.rounded;
+    const F = Frames.byKey[p.frame] || Frames.byKey.rounded;
     if (F.noCard) return;
     if (F.round) {                    // a circle stays round inside any box
-        var d = Math.min(L, T);
+        const d = Math.min(L, T);
         x0 += (L - d) / 2; y0 += (T - d) / 2; L = d; T = d;
     }
-    var r = Math.max(0, num(p.r, 0));
-    var x1 = x0 + L, y1 = y0 + T;
-    var surface = p.surface || "filled", lines = p.lines || "none", orn = p.ornament || "none";
-    var S = Surfaces.byKey[surface] || Surfaces.byKey.filled;
-    var Ln = Lines.byKey[lines] || Lines.byKey.none;
-    var O = Ornaments.byKey[orn] || Ornaments.byKey.none;
-    var ink = p.mark || p.line || "";
+    const r = Math.max(0, num(p.r, 0));
+    const x1 = x0 + L;
+    let y1 = y0 + T;
+    const surface = p.surface || "filled", lines = p.lines || "none", orn = p.ornament || "none";
+    const S = Surfaces.byKey[surface] || Surfaces.byKey.filled;
+    const Ln = Lines.byKey[lines] || Lines.byKey.none;
+    const O = Ornaments.byKey[orn] || Ornaments.byKey.none;
+    const ink = p.mark || p.line || "";
 
-    var o = { dir: p.pointing === "left" || p.pointing === "both" ? p.pointing : "right",
+    const o = { dir: p.pointing === "left" || p.pointing === "both" ? p.pointing : "right",
               flat: p.flat === "top" || p.flat === "bottom" ? p.flat : "none" };
     function outline(x, y, l, t, rr) { F.path(ctx, x, y, l, t, rr, o); }
     // a good size for one ornament: grows with the card, never huge
-    var s = Math.max(4, Math.min(12, Math.min(L, T) * 0.06));
+    const s = Math.max(4, Math.min(12, Math.min(L, T) * 0.06));
 
-    var g = {
-        ctx: ctx, p: p, vertical: false,
-        x0: x0, y0: y0, x1: x1, y1: y1, L: L, T: T, r: r,
+    const g = {
+        ctx, p, vertical: false,
+        x0, y0, x1, y1, L, T, r,
         ends: "rounded", edge: "", flat: "", dir: o.dir, inner: "end",
-        surface: surface, lines: lines, orn: orn, ink: ink,
+        surface, lines, orn, ink,
         seed: Math.round(L) % 97 + Math.round(T),
         tone: ink || "rgba(255,255,255,0.4)",
-        num: num, hash: hash,
-        outline: function (x, y, l, t, rr) { outline(x, y, l, t, rr); },
-        volute: function (cx, cy, rmax, side, color) { volute(ctx, cx, cy, rmax, side, color); },
-        texture: function (kind, color, x, y, l, t) { texture(ctx, kind, color, x, y, l, t); },
+        num, hash,
+        outline(x, y, l, t, rr) { outline(x, y, l, t, rr); },
+        volute(cx, cy, rmax, side, color) { volute(ctx, cx, cy, rmax, side, color); },
+        texture(kind, color, x, y, l, t) { texture(ctx, kind, color, x, y, l, t); },
         // the card's outline moved `inset` pixels inward, for lines
-        edge: function (inset) {
-            var d = num(inset, 0);
+        edge(inset) {
+            const d = num(inset, 0);
             outline(x0 + d, y0 + d, Math.max(1, L - 2 * d), Math.max(1, T - 2 * d), Math.max(0, r - d));
         },
         // the outline moved `inset` pixels inward as points, and a walk round it at
         // points about `step` apart (see Trace.js)
-        trace: function (inset) {
-            var d = num(inset, 0);
-            return Trace.trace(function (c) { F.path(c, x0 + d, y0 + d, Math.max(1, L - 2 * d), Math.max(1, T - 2 * d), Math.max(0, r - d), o); });
+        trace(inset) {
+            const d = num(inset, 0);
+            return Trace.trace(c => { F.path(c, x0 + d, y0 + d, Math.max(1, L - 2 * d), Math.max(1, T - 2 * d), Math.max(0, r - d), o); });
         },
-        along: function (inset, step, fn) { return Trace.walk(g.trace(inset), step, fn); },
-        walkTrace: function (tr, step, fn) { return Trace.walk(tr, step, fn); },
-        s: s,
+        along(inset, step, fn) { return Trace.walk(g.trace(inset), step, fn); },
+        walkTrace(tr, step, fn) { return Trace.walk(tr, step, fn); },
+        s,
         spots: F.spots ? F.spots(x0, y0, L, T, s, o) : Frames.boxSpots(x0, y0, L, T, s)
     };
 
@@ -168,9 +169,9 @@ function draw(ctx, p, W, H) {
             ctx.shadowColor = p.shadow;
             ctx.shadowOffsetY = Math.min(8, T * 0.04);
         }
-        var style = p.fill || "rgba(0,0,0,0)";
+        let style = p.fill || "rgba(0,0,0,0)";
         if (p.fill2) {
-            var grad = p.gradAcross ? ctx.createLinearGradient(x0, y0, x0, y1) : ctx.createLinearGradient(x0, y0, x1, y1);
+            const grad = p.gradAcross ? ctx.createLinearGradient(x0, y0, x0, y1) : ctx.createLinearGradient(x0, y0, x1, y1);
             grad.addColorStop(0, p.fill);
             grad.addColorStop(p.gradAcross ? 0.12 : 0.4, p.fill);
             grad.addColorStop(1, p.fill2);
@@ -195,15 +196,15 @@ function draw(ctx, p, W, H) {
         }
         if (S.outside) S.outside(g);
 
-        var inside = (p.pattern && p.patternColor) || (p.depth === "raised" || p.depth === "sunken");
+        const inside = (p.pattern && p.patternColor) || (p.depth === "raised" || p.depth === "sunken");
         if (inside) {
             ctx.save();
             outline(x0, y0, L, T, r);
             ctx.clip();
             if (p.pattern && p.patternColor) texture(ctx, p.pattern, p.patternColor, x0, y0, L, T);
             if ((p.depth === "raised" || p.depth === "sunken") && p.light && p.dark) {
-                var top = p.depth === "raised" ? p.light : p.dark;
-                var bottom = p.depth === "raised" ? p.dark : p.light;
+                const top = p.depth === "raised" ? p.light : p.dark;
+                const bottom = p.depth === "raised" ? p.dark : p.light;
                 ctx.lineWidth = 2;
                 ctx.strokeStyle = top;
                 outline(x0 + 1, y0 + 1, L - 2, T - 2, r);
@@ -226,7 +227,7 @@ function draw(ctx, p, W, H) {
             ctx.save();
             outline(x0, y0, L, T, r);
             ctx.clip();
-            var gl = ctx.createLinearGradient(x0, y0, x0, y0 + T * 0.5);
+            const gl = ctx.createLinearGradient(x0, y0, x0, y0 + T * 0.5);
             gl.addColorStop(0, p.glassColor || "rgba(255,255,255,0.16)");
             gl.addColorStop(1, "rgba(255,255,255,0)");
             ctx.fillStyle = gl;
@@ -235,7 +236,7 @@ function draw(ctx, p, W, H) {
         }
     }
 
-    var lw = num(p.lineWidth, 0);
+    const lw = num(p.lineWidth, 0);
     g.lw = lw;
     g.lwN = Math.max(1, lw);
     g.lineStyle = p.lineGrad && p.lineGrad.length > 1 ? angled(ctx, x0, y0, L, T, p.lineAngle, p.lineGrad) : p.line;

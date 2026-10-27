@@ -17,18 +17,18 @@ function validHex(s) {
 
 // plain text: no control characters and no < >, and not longer than allowed
 function cleanText(value, maxLength) {
-    var text = Util.toText(value).replace(/[\u0000-\u001f\u007f<>]/g, "");
+    const text = Util.toText(value).replace(/[\u0000-\u001f\u007f<>]/g, "");
     return maxLength ? text.slice(0, maxLength) : text;
 }
 
 function value(item, v) {
     if (v === null || v === undefined) return item.fallback;
     if (item.kind === "enum") {
-        var t = Util.toText(v);
+        const t = Util.toText(v);
         return item.options.indexOf(t) !== -1 ? t : item.fallback;
     }
     if (item.kind === "int") {
-        var n = parseNum(v);
+        let n = parseNum(v);
         if (!isFinite(n)) return item.fallback;
         n = Math.round(n);
         return Math.max(item.min, Math.min(item.max, n));
@@ -40,9 +40,9 @@ function value(item, v) {
     }
     if (item.kind === "multi") {
         if (!Array.isArray(v)) return item.fallback.slice();
-        var out = [];
-        for (var i = 0; i < v.length && i < 32; i++) {
-            var o = Util.toText(v[i]);
+        const out = [];
+        for (let i = 0; i < v.length && i < 32; i++) {
+            const o = Util.toText(v[i]);
             if (item.options.indexOf(o) !== -1 && out.indexOf(o) === -1) out.push(o);
         }
         return out.length > 0 || item.allowEmpty ? out : item.fallback.slice();
@@ -50,12 +50,12 @@ function value(item, v) {
     if (item.kind === "color") return validHex(v) ? ("" + v).toLowerCase() : item.fallback;
     if (item.kind === "screen") {
         // "" is the main screen, "*" every screen, anything else a screen's name
-        var s = cleanText(v, 64);
+        const s = cleanText(v, 64);
         if (s === "*" && item.allowAll === false) return item.fallback;
         return /^[A-Za-z0-9_.\-*:]{0,64}$/.test(s) ? s : item.fallback;
     }
     if (item.kind === "font") {
-        var f = cleanText(v, 80);
+        const f = cleanText(v, 80);
         return /^[A-Za-z0-9 _.\-]{0,80}$/.test(f) ? f : item.fallback;
     }
     return cleanText(v, item.maxLength || 200);

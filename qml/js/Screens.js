@@ -20,7 +20,7 @@ function placeOf(w, names, main, lostMode) {
     return lostMode === "main" ? main : "";
 }
 function shows(w, name, names, main, lostMode) {
-    var p = placeOf(w, names, main, lostMode);
+    const p = placeOf(w, names, main, lostMode);
     return p === "*" || (p !== "" && p === name);
 }
 function lost(w, names) {
@@ -30,15 +30,15 @@ function lost(w, names) {
 // the screen after the one w is on
 function nextOf(w, names, main) {
     if (!w || names.length < 2) return "";
-    var here = w.screen === "*" || w.screen === "" || names.indexOf(w.screen) === -1 ? main : w.screen;
-    var i = names.indexOf(here);
+    const here = w.screen === "*" || w.screen === "" || names.indexOf(w.screen) === -1 ? main : w.screen;
+    const i = names.indexOf(here);
     return names[(i + 1) % names.length];
 }
 
 // the screen under a point in the layout of all screens, or ""
 function at(list, gx, gy) {
-    for (var i = 0; i < list.length; i++) {
-        var s = list[i];
+    for (let i = 0; i < list.length; i++) {
+        const s = list[i];
         if (gx >= s.x && gx < s.x + s.w && gy >= s.y && gy < s.y + s.h) return s.name;
     }
     return "";
@@ -46,14 +46,14 @@ function at(list, gx, gy) {
 
 // a widget's middle at (lx, ly) on screen `from` lands where on screen `to`, in thousandths
 function carry(from, to, lx, ly) {
-    var x = (from.x + lx - to.x) / to.w * 1000, y = (from.y + ly - to.y) / to.h * 1000;
+    const x = (from.x + lx - to.x) / to.w * 1000, y = (from.y + ly - to.y) / to.h * 1000;
     return { x: Math.max(0, Math.min(1000, Math.round(x))), y: Math.max(0, Math.min(1000, Math.round(y))) };
 }
 
 // how much widgets grow on a screen this tall when sizes follow each screen's height
 function scaleFor(sizing, height) {
     if (sizing !== "screen") return 1;
-    var h = typeof height === "number" && isFinite(height) && height > 0 ? height : 1080;
+    const h = typeof height === "number" && isFinite(height) && height > 0 ? height : 1080;
     return Math.max(0.3, Math.min(4, h / 1080));
 }
 

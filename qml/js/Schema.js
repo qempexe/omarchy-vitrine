@@ -22,7 +22,7 @@ var swatches = [
 ];
 
 var LOOK_SLOTS = 20;
-function emptyLooks() { var out = []; for (var i = 0; i < LOOK_SLOTS; i++) out.push(null); return out; }
+function emptyLooks() { const out = []; for (let i = 0; i < LOOK_SLOTS; i++) out.push(null); return out; }
 
 function keysOf(mod) { return Kinds.keysOf(mod); }
 function labelsOf(mod) { return Kinds.labelsOf(mod); }
@@ -31,13 +31,13 @@ function hintOf(intro, mod) { return Kinds.hintOf(intro, mod); }
 function andList(xs) { return xs.length < 2 ? xs.join("") : xs.slice(0, xs.length - 1).join(", ") + " and " + xs[xs.length - 1]; }
 // the labels of some keys of a part, in order
 function labelsFor(mod, keys) {
-    var out = [];
-    for (var i = 0; i < keys.length; i++) if (mod.byKey[keys[i]]) out.push(mod.byKey[keys[i]].label);
+    const out = [];
+    for (let i = 0; i < keys.length; i++) if (mod.byKey[keys[i]]) out.push(mod.byKey[keys[i]].label);
     return out;
 }
 function keysWith(mod, flag, value) {
-    var out = [];
-    for (var i = 0; i < mod.list.length; i++) if (mod.list[i][flag] === value) out.push(mod.list[i].key);
+    const out = [];
+    for (let i = 0; i < mod.list.length; i++) if (mod.list[i][flag] === value) out.push(mod.list[i].key);
     return out;
 }
 
@@ -50,8 +50,8 @@ var fontLabels = { "": "Theme font", "Inter": "Inter", "Playfair Display": "Play
 // ---- the widgets of the ready made looks --------------------------------------------
 
 function W(id, kind, style, x, y, size, extra) {
-    var set = { style: style, x: x, y: y, size: size };
-    if (extra) for (var k in extra) set[k] = extra[k];
+    const set = { style, x, y, size };
+    if (extra) for (const k in extra) set[k] = extra[k];
     return Kinds.make(kind, id, set);
 }
 
@@ -117,9 +117,9 @@ var presets = [
       widgets: [W("w1", "clock", "lcd", 500, 280, 130, { seconds: true }), W("w2", "date", "line", 500, 410, 44, { card: "none" })] } }
 ];
 var presetByKey = {};
-for (var pi = 0; pi < presets.length; pi++) presetByKey[presets[pi].key] = presets[pi];
+for (let pi = 0; pi < presets.length; pi++) presetByKey[presets[pi].key] = presets[pi];
 function presetFor(key) {
-    var p = presetByKey[Util.toText(key)];
+    const p = presetByKey[Util.toText(key)];
     return p && typeof p === "object" && p.key === key ? p : null;
 }
 
@@ -367,23 +367,23 @@ var hiddenItems = [
 var colorKeys = {};
 var defaults = {};
 var itemByKey = {};
-for (var g = 0; g < groups.length; g++) {
-    var items = groups[g].items;
-    for (var i = 0; i < items.length; i++) {
-        var item = items[i];
+for (let g = 0; g < groups.length; g++) {
+    const items = groups[g].items;
+    for (let i = 0; i < items.length; i++) {
+        const item = items[i];
         if (itemByKey[item.key]) console.warn("Vitrine: the setting " + item.key + " is in Schema.js twice");
         itemByKey[item.key] = item;
         if (item.kind === "presets") continue;
         if (item.kind === "palette") {
-            for (var t = 0; t < item.targets.length; t++) {
-                var ck = item.targets[t].key;
+            for (let t = 0; t < item.targets.length; t++) {
+                const ck = item.targets[t].key;
                 defaults[ck] = item.fallback[ck];
                 colorKeys[ck] = item.fallback[ck];
             }
         } else defaults[item.key] = item.fallback;
     }
 }
-for (var h = 0; h < hiddenItems.length; h++) {
+for (let h = 0; h < hiddenItems.length; h++) {
     itemByKey[hiddenItems[h].key] = hiddenItems[h];
     defaults[hiddenItems[h].key] = hiddenItems[h].fallback;
 }
@@ -391,22 +391,22 @@ for (var h = 0; h < hiddenItems.length; h++) {
 // what a look is made of: everything but the panel's own settings, on/off and the saved looks
 var lookKeys = [];
 var lookGroups = ["Widgets", "Shape", "Surface", "Lines", "Ornaments", "Type", "Colors", "Motion", "Desktop"];
-for (var lg = 0; lg < groups.length; lg++) {
+for (let lg = 0; lg < groups.length; lg++) {
     if (lookGroups.indexOf(groups[lg].title) === -1) continue;
-    var its = groups[lg].items;
-    for (var li = 0; li < its.length; li++) {
+    const its = groups[lg].items;
+    for (let li = 0; li < its.length; li++) {
         if (its[li].kind === "palette") {
-            for (var lt = 0; lt < its[li].targets.length; lt++) lookKeys.push(its[li].targets[lt].key);
+            for (let lt = 0; lt < its[li].targets.length; lt++) lookKeys.push(its[li].targets[lt].key);
         } else lookKeys.push(its[li].key);
     }
 }
 
 var settingKeys = [];
-for (var name in defaults) settingKeys.push(name);
+for (const name in defaults) settingKeys.push(name);
 function isSetting(key) { return settingKeys.indexOf(key) !== -1; }
 
 function itemFor(key) {
-    var item = itemByKey[key];
+    const item = itemByKey[key];
     if (item && typeof item === "object" && item.key === key) return item;
     return null;
 }
@@ -416,7 +416,7 @@ function validHex(s) { return Check.validHex(s); }
 // one value, checked. Unknown keys give undefined
 function clean(key, value) {
     if (typeof colorKeys[key] === "string") return Check.validHex(value) ? ("" + value).toLowerCase() : colorKeys[key];
-    var item = itemFor(key);
+    const item = itemFor(key);
     if (item === null) return undefined;
     if (item.kind === "widgets") return value === null || value === undefined ? copyWidgets(item.fallback) : Kinds.cleanList(value);
     if (item.kind === "looks") return cleanLooks(value);
@@ -429,11 +429,11 @@ function copyWidgets(list) { return Kinds.cleanList(JSON.parse(JSON.stringify(li
 
 // only a look's keys, each checked: for saved looks, presets and imports
 function cleanLook(obj) {
-    var out = {};
+    const out = {};
     if (!obj || typeof obj !== "object" || Array.isArray(obj)) return out;
-    for (var i = 0; i < lookKeys.length; i++) {
-        var k = lookKeys[i];
-        var v = obj[k];
+    for (let i = 0; i < lookKeys.length; i++) {
+        const k = lookKeys[i];
+        const v = obj[k];
         if (v === undefined || typeof v === "function") continue;
         if (k !== "widgets" && v !== null && typeof v === "object") continue;
         out[k] = clean(k, v);
@@ -442,18 +442,18 @@ function cleanLook(obj) {
 }
 // a look with every key filled in (for the one step undo)
 function cleanLookAll(obj) {
-    var out = cleanLook(obj);
-    for (var i = 0; i < lookKeys.length; i++) if (out[lookKeys[i]] === undefined) out[lookKeys[i]] = clean(lookKeys[i], undefined);
+    const out = cleanLook(obj);
+    for (let i = 0; i < lookKeys.length; i++) if (out[lookKeys[i]] === undefined) out[lookKeys[i]] = clean(lookKeys[i], undefined);
     return out;
 }
 
 function cleanLooks(value) {
-    var out = [];
-    for (var i = 0; i < LOOK_SLOTS; i++) {
-        var v = Array.isArray(value) && i < value.length ? value[i] : null;
-        var look = v ? cleanLook(v) : null;
-        var any = false;
-        for (var k in look) { any = true; break; }
+    const out = [];
+    for (let i = 0; i < LOOK_SLOTS; i++) {
+        const v = Array.isArray(value) && i < value.length ? value[i] : null;
+        const look = v ? cleanLook(v) : null;
+        let any = false;
+        for (const k in look) { any = true; break; }
         out.push(any ? look : null);
     }
     return out;
@@ -461,17 +461,17 @@ function cleanLooks(value) {
 
 function parseLook(text) {
     if (typeof text !== "string" || text.length === 0 || text.length > 65536) return null;
-    var parsed = null;
+    let parsed = null;
     try { parsed = JSON.parse(text); } catch (e) { return null; }
-    var look = cleanLook(parsed);
-    for (var k in look) return look;
+    const look = cleanLook(parsed);
+    for (const k in look) return look;
     return null;
 }
 
 function lookOf(cfg) {
-    var out = {};
-    for (var i = 0; i < lookKeys.length; i++) {
-        var k = lookKeys[i];
+    const out = {};
+    for (let i = 0; i < lookKeys.length; i++) {
+        const k = lookKeys[i];
         out[k] = k === "widgets" ? JSON.parse(JSON.stringify(cfg[k])) : cfg[k];
     }
     return out;
@@ -481,9 +481,9 @@ function migrate(obj) { return obj; }
 
 function resolve(saved) {
     if (!saved || typeof saved !== "object") saved = {};
-    var result = {};
-    for (var key in defaults) {
-        var value = saved[key];
+    const result = {};
+    for (const key in defaults) {
+        let value = saved[key];
         if (typeof value === "function") value = undefined;
         result[key] = clean(key, value);
     }

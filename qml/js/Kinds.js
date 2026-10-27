@@ -15,14 +15,14 @@
 var MAX_WIDGETS = 24;
 
 // a list's keys and labels, for the Style tiles
-function keysOf(mod) { var out = []; for (var i = 0; i < mod.list.length; i++) out.push(mod.list[i].key); return out; }
-function labelsOf(mod) { var out = {}; for (var i = 0; i < mod.list.length; i++) out[mod.list[i].key] = mod.list[i].label; return out; }
+function keysOf(mod) { const out = []; for (let i = 0; i < mod.list.length; i++) out.push(mod.list[i].key); return out; }
+function labelsOf(mod) { const out = {}; for (let i = 0; i < mod.list.length; i++) out[mod.list[i].key] = mod.list[i].label; return out; }
 // the hint above a row of tiles: a short intro; the picked tile's own sentence is
 // added by the row itself (see aboutsOf)
 function hintOf(intro, mod) { return intro; }
 function aboutsOf(mod) {
-    var out = {};
-    for (var i = 0; i < mod.list.length; i++) if (mod.list[i].about) out[mod.list[i].key] = mod.list[i].about;
+    const out = {};
+    for (let i = 0; i < mod.list.length; i++) if (mod.list[i].about) out[mod.list[i].key] = mod.list[i].about;
     return out;
 }
 
@@ -125,53 +125,53 @@ var list = [
 ];
 
 var byKey = {};
-for (var i = 0; i < list.length; i++) {
-    var k = list[i];
+for (let i = 0; i < list.length; i++) {
+    const k = list[i];
     k.itemByKey = {};
-    for (var j = 0; j < k.items.length; j++) k.itemByKey[k.items[j].key] = k.items[j];
+    for (let j = 0; j < k.items.length; j++) k.itemByKey[k.items[j].key] = k.items[j];
     byKey[k.key] = k;
 }
 
 function kindOf(key) {
-    var k = byKey[Util.toText(key)];
+    const k = byKey[Util.toText(key)];
     return k && typeof k === "object" && k.key === key ? k : null;
 }
 
 // a new widget of a kind, with every setting at its default
 function make(kindKey, id, set) {
-    var k = kindOf(kindKey);
+    const k = kindOf(kindKey);
     if (!k) return null;
-    var w = { id: id, kind: k.key };
-    for (var i = 0; i < k.items.length; i++) {
-        var it = k.items[i];
+    const w = { id, kind: k.key };
+    for (let i = 0; i < k.items.length; i++) {
+        const it = k.items[i];
         w[it.key] = Array.isArray(it.fallback) ? it.fallback.slice() : it.fallback;
     }
-    if (set) for (var key in set) if (k.itemByKey[key]) w[key] = Check.value(k.itemByKey[key], set[key]);
+    if (set) for (const key in set) if (k.itemByKey[key]) w[key] = Check.value(k.itemByKey[key], set[key]);
     return w;
 }
 
 // one widget from settings.json, every setting checked; null if it isn't one
 function clean(obj) {
     if (!obj || typeof obj !== "object" || Array.isArray(obj)) return null;
-    var k = kindOf(obj.kind);
+    const k = kindOf(obj.kind);
     if (!k) return null;
-    var id = Util.toText(obj.id);
+    const id = Util.toText(obj.id);
     if (!/^w[0-9]{1,6}$/.test(id)) return null;
-    var w = { id: id, kind: k.key };
-    for (var i = 0; i < k.items.length; i++) {
-        var it = k.items[i];
-        var v = obj[it.key];
+    const w = { id, kind: k.key };
+    for (let i = 0; i < k.items.length; i++) {
+        const it = k.items[i];
+        let v = obj[it.key];
         if (typeof v === "function") v = undefined;
         w[it.key] = Check.value(it, v);
     }
     return w;
 }
 function cleanList(value) {
-    var out = [], seen = {};
+    const out = [], seen = {};
     // a real array, or a list handed over from outside (it has a length and numbered items)
     if (!value || typeof value !== "object" || typeof value.length !== "number") return out;
-    for (var i = 0; i < value.length && out.length < MAX_WIDGETS; i++) {
-        var w = clean(value[i]);
+    for (let i = 0; i < value.length && out.length < MAX_WIDGETS; i++) {
+        const w = clean(value[i]);
         if (w && !seen[w.id]) { seen[w.id] = true; out.push(w); }
     }
     return out;
@@ -179,9 +179,9 @@ function cleanList(value) {
 
 // the next free id for a list of widgets
 function nextId(widgets) {
-    var n = 0;
-    for (var i = 0; i < widgets.length; i++) {
-        var m = /^w([0-9]+)$/.exec(widgets[i].id);
+    let n = 0;
+    for (let i = 0; i < widgets.length; i++) {
+        const m = /^w([0-9]+)$/.exec(widgets[i].id);
         if (m) n = Math.max(n, parseInt(m[1], 10));
     }
     return "w" + (n + 1);
@@ -189,17 +189,17 @@ function nextId(widgets) {
 
 // the style entry a widget draws with
 function styleOf(w) {
-    var k = kindOf(w.kind);
+    const k = kindOf(w.kind);
     if (!k) return null;
     return k.styles.byKey[w.style] || k.styles.list[0];
 }
 
 // width / height of a widget's box
 function aspectOf(w) {
-    var s = styleOf(w);
+    const s = styleOf(w);
     if (!s) return 1;
-    var n = w.kind === "system" && w.metrics ? Math.max(1, w.metrics.length) : 1;
-    var a = typeof s.aspect === "function" ? s.aspect(w, n) : (s.aspect || 1);
+    const n = w.kind === "system" && w.metrics ? Math.max(1, w.metrics.length) : 1;
+    const a = typeof s.aspect === "function" ? s.aspect(w, n) : (s.aspect || 1);
     return Math.max(0.2, a * (w.stretch || 100) / 100);
 }
 
@@ -207,9 +207,9 @@ function aspectOf(w) {
 
 // "2027-05-15" or "2027-05-15 21:00" -> a Date, or null
 function parseWhen(s) {
-    var m = /^\s*([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})(?:[ T]([0-9]{1,2}):([0-9]{2}))?\s*$/.exec(Util.toText(s));
+    const m = /^\s*([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})(?:[ T]([0-9]{1,2}):([0-9]{2}))?\s*$/.exec(Util.toText(s));
     if (!m) return null;
-    var d = new Date(parseInt(m[1], 10), parseInt(m[2], 10) - 1, parseInt(m[3], 10),
+    const d = new Date(parseInt(m[1], 10), parseInt(m[2], 10) - 1, parseInt(m[3], 10),
                      m[4] ? parseInt(m[4], 10) : 0, m[5] ? parseInt(m[5], 10) : 0);
     return isNaN(d.getTime()) ? null : d;
 }
@@ -224,32 +224,34 @@ function greeting(h) {
 
 // w: a text widget, now: a Date, doy: the day of the year (for the quote of the day)
 function noteData(w, now, doy) {
-    var mode = w.mode || "note";
+    const mode = w.mode || "note";
     if (mode === "greeting") {
-        var name = (w.line2 || "").trim();
-        return { mode: mode, main: greeting(now.getHours()) + (name ? ", " + name : ""), sub: (w.text || "").trim(), big: "", unit: "" };
+        const name = (w.line2 || "").trim();
+        return { mode, main: greeting(now.getHours()) + (name ? ", " + name : ""), sub: (w.text || "").trim(), big: "", unit: "" };
     }
     if (mode === "quote") {
-        var all = (w.text || "").split("|"), quotes = [];
-        for (var i = 0; i < all.length; i++) if (all[i].trim() !== "") quotes.push(all[i].trim());
-        if (quotes.length === 0) return { mode: mode, main: "", sub: "", big: "", unit: "" };
-        var q = quotes[(doy || 0) % quotes.length];
-        var by = /^(.*?)\s+[—–-]\s+([^—–-]+)$/.exec(q);
-        return { mode: mode, main: by ? by[1] : q, sub: by ? by[2] : (w.line2 || ""), big: "", unit: "" };
+        const all = (w.text || "").split("|"), quotes = [];
+        for (let i = 0; i < all.length; i++) if (all[i].trim() !== "") quotes.push(all[i].trim());
+        if (quotes.length === 0) return { mode, main: "", sub: "", big: "", unit: "" };
+        const q = quotes[(doy || 0) % quotes.length];
+        const by = /^(.*?)\s+[—–-]\s+([^—–-]+)$/.exec(q);
+        return { mode, main: by ? by[1] : q, sub: by ? by[2] : (w.line2 || ""), big: "", unit: "" };
     }
     if (mode === "countdown" || mode === "since") {
-        var target = parseWhen(w.when);
-        if (!target) return { mode: mode, main: "Set a date for this countdown in its settings", sub: "", big: "", unit: "" };
-        var ms = mode === "countdown" ? target.getTime() - now.getTime() : now.getTime() - target.getTime();
-        if (ms <= 0) return { mode: mode, main: mode === "countdown" ? (w.done || "It's here!") : "Not yet", sub: w.line2 || "", big: "", unit: "" };
-        var mins = Math.floor(ms / 60000), hours = Math.floor(mins / 60), days = Math.floor(hours / 24);
-        var unit = w.unit || "auto", big, u;
-        if (unit === "full") { big = days + "d " + (hours % 24) + "h " + (mins % 60) + "m"; u = ""; }
-        else if (unit === "days" || (unit === "auto" && days >= 2)) { big = "" + days; u = days === 1 ? "day" : "days"; }
-        else if (unit === "hours" || (unit === "auto" && hours >= 2)) { big = "" + hours; u = hours === 1 ? "hour" : "hours"; }
-        else { big = "" + mins; u = mins === 1 ? "minute" : "minutes"; }
-        var label = (w.text || "").trim();
-        return { mode: mode, main: label, sub: w.line2 || "", big: big, unit: u };
+      const target = parseWhen(w.when);
+      if (!target) return { mode, main: "Set a date for this countdown in its settings", sub: "", big: "", unit: "" };
+      const ms = mode === "countdown" ? target.getTime() - now.getTime() : now.getTime() - target.getTime();
+      if (ms <= 0) return { mode, main: mode === "countdown" ? (w.done || "It's here!") : "Not yet", sub: w.line2 || "", big: "", unit: "" };
+      const mins = Math.floor(ms / 60000), hours = Math.floor(mins / 60), days = Math.floor(hours / 24);
+      const unit = w.unit || "auto";
+      let big;
+      let u;
+      if (unit === "full") { big = days + "d " + (hours % 24) + "h " + (mins % 60) + "m"; u = ""; }
+      else if (unit === "days" || (unit === "auto" && days >= 2)) { big = "" + days; u = days === 1 ? "day" : "days"; }
+      else if (unit === "hours" || (unit === "auto" && hours >= 2)) { big = "" + hours; u = hours === 1 ? "hour" : "hours"; }
+      else { big = "" + mins; u = mins === 1 ? "minute" : "minutes"; }
+      const label = (w.text || "").trim();
+      return { mode, main: label, sub: w.line2 || "", big, unit: u };
     }
     return { mode: "note", main: w.text || "", sub: w.line2 || "", big: "", unit: "" };
 }
