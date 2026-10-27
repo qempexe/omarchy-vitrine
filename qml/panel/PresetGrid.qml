@@ -55,7 +55,7 @@ ColumnLayout {
                 radius: ui.r(1.4)
                 color: on ? ui.accentTint(0.16) : ui.tint(area.containsMouse ? 0.09 : 0.04)
                 border.width: on ? 1.5 : 1
-                border.color: on ? ui.accent : ui.tint(0.08)
+                border.color: on ? ui.accentInk : ui.tint(0.08)
 
                 Canvas {
                     id: art

@@ -102,7 +102,7 @@ ColumnLayout {
                 radius: ui.r(1.4)
                 color: ui.tint(0.04)
                 border.width: 1
-                border.color: root.justSaved === index ? ui.accent : ui.tint(0.08)
+                border.color: root.justSaved === index ? ui.accentInk : ui.tint(0.08)
 
                 ColumnLayout {
                     id: col

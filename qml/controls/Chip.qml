@@ -7,7 +7,7 @@ Rectangle {
     property var ui: null
     property string label: ""
     property bool on: false
-    property color tone: ui.accent
+    property color tone: ui.accentInk
 
     signal clicked()
 

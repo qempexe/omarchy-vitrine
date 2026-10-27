@@ -191,7 +191,7 @@ Item {
                     radius: root.rad(1.4)
                     color: on ? ui.accentTint(0.16) : ui.tint(tArea.containsMouse ? 0.09 : 0.04)
                     border.width: on ? 1.5 : 1
-                    border.color: on ? ui.accent : ui.tint(0.08)
+                    border.color: on ? ui.accentInk : ui.tint(0.08)
                     Behavior on color { enabled: ui.animations; ColorAnimation { duration: 100 } }
 
                     TileArt {
@@ -249,7 +249,7 @@ Item {
                     radius: root.rad(1.4)
                     color: on ? ui.accentTint(0.16) : ui.tint(scArea.containsMouse ? 0.09 : 0.04)
                     border.width: on ? 1.5 : 1
-                    border.color: on ? ui.accent : ui.tint(0.08)
+                    border.color: on ? ui.accentInk : ui.tint(0.08)
                     Behavior on color { enabled: ui.animations; ColorAnimation { duration: 100 } }
 
                     Item {   // a tiny bar in that scheme: three islands on a desktop
@@ -375,7 +375,7 @@ Item {
                         radius: width / 2
                         color: modelData
                         border.width: on ? 2 : 1
-                        border.color: on ? ui.accent : ui.tint(0.25)
+                        border.color: on ? ui.accentInk : ui.tint(0.25)
                         scale: swArea.containsMouse ? 1.12 : 1.0
                         Behavior on scale { enabled: ui.animations; NumberAnimation { duration: 90 } }
                         MouseArea {
@@ -561,7 +561,7 @@ Item {
                         radius: root.rad(1.5)
                         color: on ? ui.accentTint(0.22) : ui.tint(fArea.containsMouse ? 0.12 : 0.06)
                         border.width: 1
-                        border.color: on ? ui.accent : ui.tint(0.10)
+                        border.color: on ? ui.accentInk : ui.tint(0.10)
                         Text {
                             id: fname
                             anchors.centerIn: parent
@@ -621,7 +621,7 @@ Item {
                         radius: root.rad(1.5)
                         color: on ? ui.accentTint(0.22) : ui.tint(sArea2.containsMouse ? 0.12 : 0.06)
                         border.width: 1
-                        border.color: on ? ui.accent : ui.tint(0.10)
+                        border.color: on ? ui.accentInk : ui.tint(0.10)
                         Text { id: sname; anchors.centerIn: parent; textFormat: Text.PlainText; text: modelData; font.family: modelData; font.pixelSize: ui.fs(12); color: ui.fg }
                         MouseArea { id: sArea2; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: root.commit(modelData) }
                     }

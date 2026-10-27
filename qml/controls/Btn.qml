@@ -22,7 +22,7 @@ Rectangle {
     color: primary ? ui.accent
          : (active ? ui.accentTint(0.25) : ui.tint(area.containsMouse ? 0.16 : 0.08))
     border.width: danger || active ? 1 : 0
-    border.color: danger ? ui.bad : ui.accent
+    border.color: danger ? ui.bad : ui.accentInk
     Behavior on color { enabled: ui.animations; ColorAnimation { duration: 90 } }
 
     Txt {

@@ -127,7 +127,7 @@ Item {
                 radius: ui.r(1.4)
                 color: ui.tint(0.05)
                 border.width: 1
-                border.color: search.activeFocus ? ui.accent : ui.tint(0.10)
+                border.color: search.activeFocus ? ui.accentInk : ui.tint(0.10)
                 Txt {
                     ui: root.ui
                     anchors.left: parent.left
@@ -218,7 +218,7 @@ Item {
                             anchors.bottom: parent.bottom
                             height: 2
                             radius: 1
-                            color: ui.accent
+                            color: ui.accentInk
                         }
                         MouseArea {
                             id: tabArea
@@ -286,7 +286,7 @@ Item {
                                 font.pixelSize: ui.fs(10)
                                 font.weight: Font.DemiBold
                                 font.letterSpacing: 1.5
-                                color: ui.accent
+                                color: ui.accentInk
                                 elide: Text.ElideRight
                             }
                             Rectangle {

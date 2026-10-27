@@ -47,7 +47,7 @@ Item {
     readonly property color frameColor: {
         const n = borderColors.length
         const pick = cfgSafe.panelFrameColor
-        if (n === 0 || pick === "accent" || !pick) return accent
+        if (n === 0 || pick === "accent" || !pick) return accentInk
         if (pick === "first") return Qt.color(borderColors[0])
         if (pick === "last") return Qt.color(borderColors[n - 1])
         return Qt.color(borderColors[Math.floor((n - 1) / 2)])
@@ -96,6 +96,19 @@ Item {
     }
 
     readonly property color accentText: contrast(accent)
+    // the accent where it is text or a thin line on the panel: the same hue, made darker
+    // (on a light panel) or lighter (on a dark one) only as much as it needs to be read.
+    // fills keep the accent itself
+    readonly property color accentInk: inkOn(accent, surface)
+    function inkOn(c, on) {
+        if (Math.abs(lumOf(c) - lumOf(on)) >= 0.35) return c
+        const to = lumOf(on) > 0.5 ? 0 : 1
+        for (let t = 0.1; t < 1; t += 0.1) {
+            const m = Qt.rgba(c.r + (to - c.r) * t, c.g + (to - c.g) * t, c.b + (to - c.b) * t, 1)
+            if (Math.abs(lumOf(m) - lumOf(on)) >= 0.35) return m
+        }
+        return contrast(on)
+    }
     readonly property color urgent: mono ? fg : Qt.rgba(themeUrgent.r, themeUrgent.g, themeUrgent.b, 1)
     readonly property color bad: mono ? fg
         : (lightSurface ? Qt.rgba(0.74, 0.16, 0.26, 1) : Qt.rgba(0.97, 0.46, 0.56, 1))

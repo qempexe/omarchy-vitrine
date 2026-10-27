@@ -20,7 +20,7 @@ Item {
     width: 72
     height: 44
 
-    readonly property color ink: on ? ui.accent : ui.tint(0.55)
+    readonly property color ink: on ? ui.accentInk : ui.tint(0.55)
     readonly property color soft: on ? ui.accentTint(0.40) : ui.tint(0.20)
 
     function rgb(c) { return [c.r * 255, c.g * 255, c.b * 255] }
