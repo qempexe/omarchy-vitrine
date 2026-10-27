@@ -1,7 +1,13 @@
-# Vitrine
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: light)" srcset="assets/logo-dark.png">
+    <img src="assets/logo.png" alt="Vitrine logo" width="112">
+  </picture>
+</p>
 
-A display case for the [Omarchy](https://omarchy.org) desktop: clocks, dates,
-readings and notes, set out behind your windows.
+<h1 align="center">Vitrine</h1>
+
+<p align="center">A display case for the <a href="https://omarchy.org">Omarchy</a> desktop: clocks, dates, readings and notes, set out behind your windows.</p>
 
 ![Vitrine](preview.png)
 
@@ -14,19 +20,21 @@ wallpaper or sit on a card, plain or ornate, in the colors of the current theme.
 Nothing on the desktop changes underneath. The widgets ignore the mouse, so
 clicking or right clicking the wallpaper works exactly as it did before.
 
-## Setup
+## Features
 
-```bash
-omarchy plugin add https://github.com/qempexe/omarchy-vitrine.git --enable --yes
-omarchy restart shell
-```
+- **Clocks** in 25 faces, digital, written out and dials, with time zones for world clocks.
+- **Dates** in ten forms, from one line to the whole year, and the Moon tonight.
+- **System readings**: processor, memory, disk, battery, temperature, network, load,
+  uptime and swap, as rings, bars, graphs, gauges or a terminal readout.
+- **Now playing** from any player, in five styles, hiding itself when nothing plays.
+- **Notes and countdowns**: a note, a daily quote, a greeting, a countdown or time since.
+- **Cards**: 44 shapes, 30 surfaces, 22 edge lines and 18 ornaments, all optional.
+- **Sixteen ready-made desks**, twenty places for your own, and undo for the last look.
+- **Several screens**: per-screen placement, dragging across screens, and widgets that
+  come back when a screen is plugged in again.
+- **Out of the way**: the widgets ignore the mouse, and only Arrange takes it.
 
-The widgets appear right away. For the settings, add the Vitrine button to the
-bar: through the bar's own settings, or by adding
-`{ "id": "io.github.qempexe.vitrine" }` to `bar` → `layout` in
-`~/.config/omarchy/shell.json`.
-
-## Ready-made desks
+### Ready-made desks
 
 Sixteen complete arrangements, each with its own widgets, positions, cards,
 colors and type. Pick one in **Looks** and adjust from there. If the result is
@@ -37,7 +45,7 @@ of replacing them.
 ![Looks, part 1](screenshots/looks-1.png)
 ![Looks, part 2](screenshots/looks-2.png)
 
-## Clocks
+### Clocks
 
 Twenty-five faces. The digital ones: Plain, Stacked, Sidecar, Editorial, Binary,
 LCD (unlit segments included), Flip, Dot matrix, Nixie, Odometer, Roman, Totem
@@ -53,7 +61,7 @@ becomes a world clock, daylight saving time included.
 ![Clock faces, part 1](screenshots/faces-1.png)
 ![Clock faces, part 2](screenshots/faces-2.png)
 
-## Dates
+### Dates
 
 One line, Stacked, a Tear-off calendar page, a Letter ("Friday, the sixteenth of
 October"), ISO with week number and day of the year, the current Week, the
@@ -62,7 +70,7 @@ and day, and the Moon as it is tonight.
 
 ![Dates](screenshots/dates.png)
 
-## System and media
+### System and media
 
 The system widget shows any of processor, memory, disk, battery, temperature,
 network, load, uptime and swap, in the order chosen. They can be drawn as rings,
@@ -76,7 +84,7 @@ nothing plays.
 
 ![System and media](screenshots/system-media.png)
 
-## Notes and countdowns
+### Notes and countdowns
 
 A note, a rotating quote (a different one each day, from a list you write), a
 greeting that changes with the time of day, a countdown to a date, or the time
@@ -85,7 +93,7 @@ large counter and blackletter.
 
 ![Text](screenshots/text.png)
 
-## Cards
+### Cards
 
 A card is optional. Without one, the widget sits directly on the wallpaper with
 a soft shadow for contrast. With one, there are 44 shapes to choose from.
@@ -112,7 +120,24 @@ and corner studs land in the shape's real corners.
 ![Lines](screenshots/lines.png)
 ![Ornaments](screenshots/ornaments.png)
 
-## Placing widgets
+## Installation
+
+```bash
+omarchy plugin add https://github.com/qempexe/omarchy-vitrine.git --enable --yes
+omarchy restart shell
+```
+
+The widgets appear right away. For the settings, add the Vitrine button to the
+bar: through the bar's own settings, or by adding
+`{ "id": "io.github.qempexe.vitrine" }` to `bar` → `layout` in
+`~/.config/omarchy/shell.json`.
+
+It needs `curl` and `vipsthumbnail` (from libvips) for the covers of now playing,
+which Omarchy already has.
+
+## Usage
+
+### Placing widgets
 
 **Arrange** (a right click on the button, or the button in the settings) lifts
 the widgets above the windows on a dimmed desktop. In that mode:
@@ -126,7 +151,7 @@ The strip at the top adds new widgets, on the screen they are added from.
 
 ![Arrange](screenshots/arrange.png)
 
-## Several screens
+### Several screens
 
 Each screen has its own desktop, and Arrange opens on all of them together.
 
@@ -145,46 +170,7 @@ Each screen has its own desktop, and Arrange opens on all of them together.
   smaller on a laptop panel.
 - **Hiding behind windows** is decided per screen, by that screen's workspace.
 
-## The settings panel
-
-A left click on the button opens it. Changes apply immediately and are saved in
-`~/.local/state/omarchy-vitrine/settings.json`. **Alt+←** and **Alt+→** move
-between tabs, and the search field covers every setting.
-
-<table>
-<tr>
-<td><img src="screenshots/settings-looks.png" alt="Looks"></td>
-<td><img src="screenshots/settings-widgets.png" alt="Widgets"></td>
-<td><img src="screenshots/settings-widget-style.png" alt="A widget's style"></td>
-<td><img src="screenshots/settings-shape.png" alt="Shape"></td>
-<td><img src="screenshots/settings-surface.png" alt="Surface"></td>
-<td><img src="screenshots/settings-lines.png" alt="Lines"></td>
-</tr>
-<tr>
-<td><img src="screenshots/settings-ornaments.png" alt="Ornaments"></td>
-<td><img src="screenshots/settings-type.png" alt="Type"></td>
-<td><img src="screenshots/settings-colors.png" alt="Colors"></td>
-<td><img src="screenshots/settings-motion.png" alt="Motion"></td>
-<td><img src="screenshots/settings-desktop.png" alt="Desktop"></td>
-<td><img src="screenshots/settings-panel.png" alt="Panel"></td>
-</tr>
-</table>
-
-| Tab | Covers |
-| --- | --- |
-| Looks | the sixteen ready-made desks, and twenty slots for your own, widgets included |
-| Widgets | every widget on the desktop; select one for its style, size, position, screen, card, accent, opacity, caption and content |
-| Shape | the card shape, the direction it points, square corners, roundness and inner padding |
-| Surface | the material, its opacity, solid, gradient or glass fill (with the gradient's color and direction), texture, depth and shadow |
-| Lines | the edge line, its color and width, an optional gradient, and which side a rail runs along |
-| Ornaments | decoration on the card, in the accent color |
-| Type | seven bundled fonts (Inter, Playfair, Cormorant, Space Grotesk, JetBrains Mono, Bebas Neue and a blackletter), the theme's font, or any installed font by search; weights from hairline to black; a text effect for widgets without a card |
-| Colors | the theme's colors, a palette color per widget, the window border's colors spread across the screen, your own colors, or monochrome |
-| Motion | how widgets appear, together or one after another; sweeping second hands; Flip and Odometer animation |
-| Desktop | hiding when windows are open or one is fullscreen, overall size (fixed or by screen height), the main screen and what happens when a screen is unplugged |
-| Panel | the button, right and middle click, and the panel's size, spacing, corners, outline, text size, tint and opacity |
-
-## Bar button
+### Bar button
 
 | Click | Action |
 | --- | --- |
@@ -195,7 +181,7 @@ between tabs, and the search field covers every setting.
 With **Bar button** set to **Hidden**, Vitrine runs without a button; the
 settings are then reached from the command line.
 
-## Command line
+### Command line
 
 ```bash
 omarchy-shell io.github.qempexe.vitrine settings      # open the settings (again to close)
@@ -221,7 +207,50 @@ omarchy-shell io.github.qempexe.vitrine status        # as json
 line. Anyone can paste that line into `importLook` to get the same desk. Imports
 accept look settings only, and each value is checked before it is used.
 
-## Notes on behaviour
+## Configuration
+
+A left click on the button opens it. Changes apply immediately and are saved in
+`~/.local/state/omarchy-vitrine/settings.json`. **Alt+←** and **Alt+→** move
+between tabs, and the search field covers every setting.
+
+<table>
+<tr>
+<td><img src="screenshots/settings-looks.png" alt="Looks"></td>
+<td><img src="screenshots/settings-widgets.png" alt="Widgets"></td>
+<td><img src="screenshots/settings-widget-style.png" alt="A widget's style"></td>
+<td><img src="screenshots/settings-shape.png" alt="Shape"></td>
+<td><img src="screenshots/settings-surface.png" alt="Surface"></td>
+<td><img src="screenshots/settings-lines.png" alt="Lines"></td>
+</tr>
+<tr>
+<td><img src="screenshots/settings-ornaments.png" alt="Ornaments"></td>
+<td><img src="screenshots/settings-type.png" alt="Type"></td>
+<td><img src="screenshots/settings-colors.png" alt="Colors"></td>
+<td><img src="screenshots/settings-motion.png" alt="Motion"></td>
+<td><img src="screenshots/settings-desktop.png" alt="Desktop"></td>
+<td><img src="screenshots/settings-panel.png" alt="Panel"></td>
+</tr>
+<tr>
+<td><img src="screenshots/settings-about.png" alt="About"></td>
+</tr>
+</table>
+
+| Tab | Covers |
+| --- | --- |
+| Looks | the sixteen ready-made desks, and twenty slots for your own, widgets included |
+| Widgets | every widget on the desktop; select one for its style, size, position, screen, card, accent, opacity, caption and content |
+| Shape | the card shape, the direction it points, square corners, roundness and inner padding |
+| Surface | the material, its opacity, solid, gradient or glass fill (with the gradient's color and direction), texture, depth and shadow |
+| Lines | the edge line, its color and width, an optional gradient, and which side a rail runs along |
+| Ornaments | decoration on the card, in the accent color |
+| Type | seven bundled fonts (Inter, Playfair, Cormorant, Space Grotesk, JetBrains Mono, Bebas Neue and a blackletter), the theme's font, or any installed font by search; weights from hairline to black; a text effect for widgets without a card |
+| Colors | the theme's colors, a palette color per widget, the window border's colors spread across the screen, your own colors, or monochrome |
+| Motion | how widgets appear, together or one after another; sweeping second hands; Flip and Odometer animation |
+| Desktop | hiding when windows are open or one is fullscreen, overall size (fixed or by screen height), the main screen and what happens when a screen is unplugged |
+| Panel | the button, right and middle click, and the panel's size, spacing, corners, outline, text size, tint and opacity |
+| About | the logo, the version and a link to more plugins |
+
+## Troubleshooting
 
 - **Cost.** A widget is redrawn only when its content changes: a clock without
   seconds once a minute, a date once a minute, a card only when its settings
@@ -233,31 +262,49 @@ accept look settings only, and each value is checked before it is used.
   continuously, and only while visible.
 - **Input.** The widgets live on the desktop layer with an empty input region,
   so the wallpaper keeps all its clicks. Only Arrange takes the mouse.
-- **Network.** None, apart from the cover art URL a music player provides.
+- **Network.** None, apart from the cover a music player gives as a web address. That
+  one is fetched by `curl` with a size cap (8 MiB) and a time limit.
+- **Covers.** A cover is never shown as the player gives it: the download, or the
+  player's own file, is made into a small, clean PNG first, by `vipsthumbnail` in a
+  separate process with a memory and a time limit. Those copies live in
+  `~/.cache/omarchy-vitrine/` and are cleared at every start.
 
-## Source layout
+- **A cover doesn't show.** Check that `curl` and `vipsthumbnail` are installed. A
+  cover that can't be fetched or read is skipped for the rest of the session.
+- **Something looks off on my setup.** Open an issue with a screenshot and your
+  `omarchy-shell io.github.qempexe.vitrine status`.
+
+## Contributing
+
+Bug reports and ideas are welcome as [issues](https://github.com/qempexe/omarchy-vitrine/issues).
+A new clock face, card shape, surface, line or ornament is a single entry in a single
+file; [CONTRIBUTING.md](CONTRIBUTING.md) explains the format and the tests. Everyone
+taking part is expected to follow the [code of conduct](CODE_OF_CONDUCT.md). What
+changed in each version is in the [changelog](CHANGELOG.md).
+
+### Source layout
 
 ```
 qml/
 ├── Service.qml        settings, colors, fonts, readings, looks, ipc
 ├── BarWidget.qml      the bar button
 ├── desk/              Desktop (the widgets on the desktop), Arrange, WidgetView, Busy
-├── core/              SettingsStore, UiState, SystemData, MediaData, Zones
+├── core/              SettingsStore, UiState, SystemData, MediaData, Zones,
+│                      ArtCache (the covers, made safe), Run (a helper with limits)
 ├── panel/             Panel, PopoutWindow, PanelView, SettingsView, SettingRow,
-│                      WidgetsEditor, PresetGrid, LookSlots, TileArt
+│                      WidgetsEditor, PresetGrid, LookSlots, TileArt, AboutPage
 ├── controls/          Btn, Chip, Sw, Txt, TextBox
 └── js/                Schema.js (settings and looks), Kinds.js (the kinds of widget),
-    │                  Look.js (colors and cards), Screens.js (which screen), Card.js, Trace.js, ...
+    │                  Look.js (colors and cards), Screens.js (which screen), Art.js (covers),
+    │                  Card.js, Trace.js, ...
     └── parts/         Faces, Dates, Meters, Media, Notes (the styles), Frames,
                        Surfaces, Lines, Ornaments: one entry for each, with its drawing
+assets/                the logo, light and dark
 fonts/                 seven OFL fonts and their licenses
 tests/test_vitrine.js  node tests/test_vitrine.js
 ```
 
-A new clock face, card shape, surface, line or ornament is a single entry in a
-single file. [CONTRIBUTING.md](CONTRIBUTING.md) explains the format.
-
-## Upgrading and uninstalling
+### Upgrading and uninstalling
 
 ```bash
 omarchy plugin update io.github.qempexe.vitrine
@@ -267,9 +314,9 @@ omarchy restart shell
 ```bash
 omarchy plugin remove io.github.qempexe.vitrine
 omarchy restart shell
-rm -rf ~/.local/state/omarchy-vitrine   # settings and saved looks
+rm -rf ~/.local/state/omarchy-vitrine ~/.cache/omarchy-vitrine   # settings, saved looks and covers
 ```
 
-## License
+## License and credits
 
 [MIT](LICENSE). The fonts in `fonts/` are under the [SIL Open Font License](fonts/licenses).
