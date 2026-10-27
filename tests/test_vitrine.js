@@ -333,6 +333,14 @@ t("covers are fetched with a cap and shrunk in a capped process before they are 
   assert.ok(!/loadImage\([^)]*artUrl/.test(view) && /covers\.fileFor\(/.test(view))
   assert.ok(/environment: \(\{ VIPS_BLOCK_UNTRUSTED: "1", VIPS_CONCURRENCY: "1"/.test(fs.readFileSync(path.join(__dirname, "../qml/core/ArtCache.qml"), "utf8")))
 })
+t("text without a card follows its setting with custom colors too", () => {
+  const th = { bg: [20, 20, 20], fg: [224, 224, 224], accent: [255, 106, 31], urgent: [255, 0, 0], barText: [200, 200, 200], palette: [], borders: [] }
+  const bare = Object.assign(Kinds.make("clock", "w1"), { card: "none" })
+  const cfg = (o) => Schema.resolve(Object.assign({ colorMode: "custom", customBg: "#e0def4", customFg: "#3b2a1f", accentColor: "#fabd2f" }, o))
+  assert.deepStrictEqual(Look.colorsFor(cfg({ bareInk: "theme" }), th, bare, 0, 0.5).ink, [59, 42, 31])
+  assert.deepStrictEqual(Look.colorsFor(cfg({ bareInk: "accent" }), th, bare, 0, 0.5).ink, [250, 189, 47])
+  assert.deepStrictEqual(Look.colorsFor(cfg({ bareInk: "bar" }), th, bare, 0, 0.5).ink, [200, 200, 200])
+})
 t("manifest", () => {
   const m = JSON.parse(fs.readFileSync(path.join(__dirname, "../manifest.json"), "utf8"))
   assert.strictEqual(m.id, "io.github.qempexe.vitrine"); assert.strictEqual(m.version, "1.0.0")
