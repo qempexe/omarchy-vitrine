@@ -51,8 +51,9 @@ tiles people know stay where they are.
   minute for most clocks). A few hundred path calls is fine; a loop over pixels
   is not.
 - No randomness: the same moment always looks the same.
-- Plain ES5 JavaScript (`var`, `function`), and no `String()`, `Number()` or
-  `Object.` calls.
+- ES6 JavaScript: `const` and `let`, and arrow functions for callbacks. The names a
+  `.pragma library` file shares at its top level stay `var` (and `function`), because
+  that is how QML sees them. No `String()`, `Number()` or `Object.` calls.
 
 ## A style: `g`
 
@@ -97,10 +98,10 @@ A clock face, in `Faces.js`:
 ```js
 { key: "ledger", label: "Ledger", about: "Ledger writes the time like a sum in an old account book.",
   aspect: 2.8, seconds: false,
-  draw: function (g) {
-      var ctx = g.ctx, str = hh(g) + ":" + mm(g);
-      var px = D.fit(ctx, str, g.w * 0.9, g.h * 0.7 / 0.74, 400, g.fonts.serif);
-      D.text(ctx, str, g.w / 2, g.h / 2 + px * 0.33, { px: px, weight: 400, family: g.fonts.serif, base: "alphabetic", color: g.col("ink") });
+  draw(g) {
+      const ctx = g.ctx, str = hh(g) + ":" + mm(g);
+      const px = D.fit(ctx, str, g.w * 0.9, g.h * 0.7 / 0.74, 400, g.fonts.serif);
+      D.text(ctx, str, g.w / 2, g.h / 2 + px * 0.33, { px, weight: 400, family: g.fonts.serif, base: "alphabetic", color: g.col("ink") });
       ctx.fillStyle = g.col("accent");
       ctx.fillRect(g.w * 0.08, g.h * 0.86, g.w * 0.84, Math.max(1, g.h * 0.015));
       ctx.fillRect(g.w * 0.08, g.h * 0.9, g.w * 0.84, Math.max(1, g.h * 0.015));
@@ -129,7 +130,7 @@ A card's shape is one closed path:
 ```js
 { key: "lozenge", label: "Lozenge", about: "Lozenge is a diamond on its side.",
   inner: { l: 0.18, r: 0.18, t: 0.12, b: 0.12 },
-  path: function (ctx, x, y, w, h, r) {
+  path(ctx, x, y, w, h, r) {
       ctx.beginPath();
       ctx.moveTo(x + w / 2, y); ctx.lineTo(x + w, y + h / 2);
       ctx.lineTo(x + w / 2, y + h); ctx.lineTo(x, y + h / 2);
@@ -162,7 +163,7 @@ corner. The right end is the same list, mirrored. Then the shape is one entry in
 
 ```js
 // a form: a deep V cut into the end
-vee: function (T, L) { var d = Math.min(T * 0.6, L / 4); return { pts: [[0, T], [d, T / 2], [0, 0]], links: [null, null] }; },
+vee(T, L) { const d = Math.min(T * 0.6, L / 4); return { pts: [[0, T], [d, T / 2], [0, 0]], links: [null, null] }; },
 
 // and the shape that uses it on both sides
 { key: "vee", label: "Vee", about: "Vee cuts a deep V into each end.", form: fixed("vee"), sides: room(0.7) },
@@ -197,13 +198,13 @@ A surface, in `Surfaces.js` (all hooks optional; with none it's a plain fill):
 
 ```js
 { key: "linen", label: "Linen", about: "Linen has a fine weave.",
-  inside: function (g) {      // clipped to the card, after the fill
-      var ctx = g.ctx;
+  inside(g) {      // clipped to the card, after the fill
+      const ctx = g.ctx;
       ctx.strokeStyle = "rgba(255,255,255,0.05)";
       ctx.lineWidth = 1;
       ctx.beginPath();
-      for (var x = g.x0; x < g.x1; x += 3) { ctx.moveTo(x, g.y0); ctx.lineTo(x, g.y1); }
-      for (var y = g.y0; y < g.y1; y += 3) { ctx.moveTo(g.x0, y); ctx.lineTo(g.x1, y); }
+      for (let x = g.x0; x < g.x1; x += 3) { ctx.moveTo(x, g.y0); ctx.lineTo(x, g.y1); }
+      for (let y = g.y0; y < g.y1; y += 3) { ctx.moveTo(g.x0, y); ctx.lineTo(g.x1, y); }
       ctx.stroke();
   } },
 ```
@@ -217,9 +218,9 @@ A line, in `Lines.js`:
 
 ```js
 { key: "dashes", label: "Long dashes",
-  draw: function (g) {
+  draw(g) {
       if (!g.p.line) return;
-      var ctx = g.ctx;
+      const ctx = g.ctx;
       ctx.save();
       ctx.lineWidth = g.lwN; ctx.strokeStyle = g.lineStyle;
       ctx.setLineDash([g.lwN * 8, g.lwN * 4]);
@@ -236,10 +237,10 @@ An ornament, in `Ornaments.js`:
 
 ```js
 { key: "pins", label: "Pins", about: "Pins hold the card up at its two top corners.",
-  draw: function (g) {
-      var ctx = g.ctx, c = g.spots.corners;
+  draw(g) {
+      const ctx = g.ctx, c = g.spots.corners;
       ctx.fillStyle = g.markStyle || g.tone;
-      for (var i = 0; i < 2; i++) { ctx.beginPath(); ctx.arc(c[i].x, c[i].y, g.s * 0.45, 0, Math.PI * 2); ctx.fill(); }
+      for (let i = 0; i < 2; i++) { ctx.beginPath(); ctx.arc(c[i].x, c[i].y, g.s * 0.45, 0, Math.PI * 2); ctx.fill(); }
   } },
 ```
 
