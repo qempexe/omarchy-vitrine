@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "io.github.qempexe.vitrine",
   "name": "Vitrine",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": "qempexe",
   "license": "MIT",
   "description": "Desktop widgets behind your windows: clocks, dates, system readings, now playing and notes, on customizable cards.",

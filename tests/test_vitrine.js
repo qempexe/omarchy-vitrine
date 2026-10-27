@@ -349,7 +349,7 @@ t("custom colors are used exactly as picked", () => {
 })
 t("manifest", () => {
   const m = JSON.parse(fs.readFileSync(path.join(__dirname, "../manifest.json"), "utf8"))
-  assert.strictEqual(m.id, "io.github.qempexe.vitrine"); assert.strictEqual(m.version, "1.0.0")
+  assert.strictEqual(m.id, "io.github.qempexe.vitrine"); assert.strictEqual(m.version, "1.1.0")
   for (const k in m.entryPoints) assert.ok(fs.existsSync(path.join(__dirname, "..", m.entryPoints[k])), k)
   for (const f of ["Inter", "PlayfairDisplay", "CormorantGaramond", "SpaceGrotesk", "JetBrainsMono", "BebasNeue", "UnifrakturMaguntia"])
     assert.ok(fs.existsSync(path.join(__dirname, "../fonts", f + ".ttf")), f)
