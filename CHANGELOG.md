@@ -4,6 +4,14 @@ All notable changes to Vitrine. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions follow
 [Semantic Versioning](https://semver.org/).
 
+## [1.1.1] - 2026-11-05
+
+### Fixed
+
+- On Omarchy 4.5, where the bar's window spans the screen, the panel didn't open, or
+  opened over the bar. It now opens off the bar's outer edge, on any edge and with any
+  bar size.
+
 ## [1.1.0] - 2026-10-27
 
 ### Added
@@ -35,5 +43,6 @@ All notable changes to Vitrine. The format follows
   22 lines and 18 ornaments. Sixteen ready-made desks, twenty places for your own,
   Arrange mode, and placement across several screens.
 
+[1.1.1]: https://github.com/qempexe/omarchy-vitrine/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/qempexe/omarchy-vitrine/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/qempexe/omarchy-vitrine/releases/tag/v1.0.0
