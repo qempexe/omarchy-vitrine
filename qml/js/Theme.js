@@ -3,18 +3,21 @@
 // Reading colors out of the current Omarchy theme. Only #rrggbb values and a number
 // for the angle are taken from the files; nothing in them is run.
 
-// colors.toml: color1 … color6 and their bright versions, in that order, each once
+// colors.toml: indexed color keys, or Omarchy's named colors and bright variants
 function parsePalette(text) {
     const found = {};
     if (typeof text === "string" && text.length <= 65536) {
         const lines = text.split("\n");
         for (let i = 0; i < lines.length; i++) {
-            const m = /^\s*(color[0-9]{1,2})\s*=\s*["']?(#[0-9a-fA-F]{6})["']?\s*$/.exec(lines[i]);
+            const m = /^\s*(color[0-9]{1,2}|red|orange|yellow|green|cyan|blue|magenta|brown|bright_red|bright_orange|bright_yellow|bright_green|bright_cyan|bright_blue|bright_magenta|bright_brown)\s*=\s*["']?(#[0-9a-fA-F]{6})["']?\s*$/.exec(lines[i]);
             if (m) found[m[1]] = m[2].toLowerCase();
         }
     }
-    const order = ["color1", "color2", "color3", "color4", "color5", "color6",
-                 "color9", "color10", "color11", "color12", "color13", "color14"];
+    const indexed = ["color1", "color2", "color3", "color4", "color5", "color6",
+                     "color9", "color10", "color11", "color12", "color13", "color14"];
+    const named = ["red", "orange", "yellow", "green", "cyan", "blue", "magenta", "brown",
+                   "bright_red", "bright_orange", "bright_yellow", "bright_green", "bright_cyan", "bright_blue", "bright_magenta", "bright_brown"];
+    const order = indexed.some(k => found[k]) ? indexed : named;
     const out = [];
     for (let j = 0; j < order.length; j++) {
         const c = found[order[j]];

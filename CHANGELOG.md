@@ -4,6 +4,13 @@ All notable changes to Vitrine. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions follow
 [Semantic Versioning](https://semver.org/).
 
+## [1.2.1] - 2026-11-08
+
+### Fixed
+
+- Theme gradients and palette colors now read Omarchy's named color keys as well as
+  indexed `color1` keys, so themes such as Spectral use their full palette.
+
 ## [1.2.0] - 2026-11-08
 
 ### Added
@@ -62,6 +69,7 @@ All notable changes to Vitrine. The format follows
   22 lines and 18 ornaments. Sixteen ready-made desks, twenty places for your own,
   Arrange mode, and placement across several screens.
 
+[1.2.1]: https://github.com/qempexe/omarchy-vitrine/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/qempexe/omarchy-vitrine/compare/v1.1.1...v1.2.0
 [1.1.1]: https://github.com/qempexe/omarchy-vitrine/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/qempexe/omarchy-vitrine/compare/v1.0.0...v1.1.0
