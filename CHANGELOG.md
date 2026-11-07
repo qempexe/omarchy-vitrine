@@ -4,6 +4,25 @@ All notable changes to Vitrine. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions follow
 [Semantic Versioning](https://semver.org/).
 
+## [1.2.0] - 2026-11-08
+
+### Added
+
+- **Theme colors** for the gradient fill. *Gradient into* now also has *Theme colors*,
+  which runs the card through several colors of your Omarchy theme, not only two.
+  It follows the theme as it changes.
+- **Theme colors** for gradient lines (*Fade into*). The lines, and the rails and
+  brackets drawn with them, run through several colors of your theme.
+
+### Changed
+
+- New desks now start with the active Omarchy theme's full color spectrum on cards and
+  lines. They update when you choose another theme; existing color choices stay editable.
+- Theme colors takes the theme's palette, then the window border's colors if there is no
+  palette. With Custom or Monochrome colors it runs through shades of your accent
+  instead, so Monochrome stays without a hue.
+- *Gradient into* and *Fade into* show their choices as chips, so the longer names fit.
+
 ## [1.1.1] - 2026-11-05
 
 ### Fixed
@@ -43,6 +62,7 @@ All notable changes to Vitrine. The format follows
   22 lines and 18 ornaments. Sixteen ready-made desks, twenty places for your own,
   Arrange mode, and placement across several screens.
 
+[1.2.0]: https://github.com/qempexe/omarchy-vitrine/compare/v1.1.1...v1.2.0
 [1.1.1]: https://github.com/qempexe/omarchy-vitrine/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/qempexe/omarchy-vitrine/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/qempexe/omarchy-vitrine/releases/tag/v1.0.0

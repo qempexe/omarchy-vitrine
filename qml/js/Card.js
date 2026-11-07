@@ -18,6 +18,8 @@
 //   surface, lines, ornament   keys from parts/
 //   fill, fill2       css colors, fill2 for a gradient ("" = none); gradAcross runs it
 //                     from the top down instead of corner to corner
+//   fillStops         css colors the gradient runs through, evenly, instead of fill to
+//                     fill2 (the theme's colors); empty = just fill to fill2
 //   glass             a bright line along the top
 //   line, lineWidth   line color and width (0 = no line)
 //   mark, markWidth   the accent, for ornaments and rails
@@ -172,9 +174,15 @@ function draw(ctx, p, W, H) {
         let style = p.fill || "rgba(0,0,0,0)";
         if (p.fill2) {
             const grad = p.gradAcross ? ctx.createLinearGradient(x0, y0, x0, y1) : ctx.createLinearGradient(x0, y0, x1, y1);
-            grad.addColorStop(0, p.fill);
-            grad.addColorStop(p.gradAcross ? 0.12 : 0.4, p.fill);
-            grad.addColorStop(1, p.fill2);
+            const stops = p.fillStops;
+            if (stops && stops.length > 1) {
+                // several colors, spread evenly (the theme's colors)
+                stops.forEach((c, i) => grad.addColorStop(i / (stops.length - 1), c));
+            } else {
+                grad.addColorStop(0, p.fill);
+                grad.addColorStop(p.gradAcross ? 0.12 : 0.4, p.fill);
+                grad.addColorStop(1, p.fill2);
+            }
             style = grad;
         }
         if (S.fillStyle) style = S.fillStyle(g, style);

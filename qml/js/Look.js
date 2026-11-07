@@ -64,21 +64,41 @@ function colorsFor(cfg, th, w, index, xFrac) {
     return { ink, accent, accent2, bg, card };
 }
 
-// the line color(s) of a card, from the Line color setting
+// a few colors of the theme for a gradient that runs through several of them, spread along
+// its palette so they differ: [r, g, b] each, two at least. Without a palette it is the
+// window border's colors, and without those (or in Custom and Monochrome, which keep to
+// your own colors, or none) shades of the accent
+function spectrumOf(cfg, th, c) {
+    const own = cfg.colorMode === "custom" || cfg.colorMode === "monochrome";
+    const src = own ? [] : (th.palette && th.palette.length ? th.palette : (th.borders && th.borders.length > 1 ? th.borders : []));
+    const out = [];
+    const n = Math.min(4, src.length);
+    for (let i = 0; i < n; i++) out.push(hex3(src[n === 1 ? 0 : Math.round(i * (src.length - 1) / (n - 1))]));
+    if (out.length === 1) out.unshift(c.accent);
+    if (out.length === 0) return [c.accent, mix(c.accent, [255, 255, 255], 0.45), mix(c.accent, [0, 0, 0], 0.4)];
+    return out;
+}
+
+// the line color(s) of a card, from the Line color setting. marks: the accents drawn with
+// the lines (rails, brackets), in several colors when the lines are
 function lineColors(cfg, th, colors) {
     const c = colors;
     let one;
     if (cfg.border === "text") one = css(c.ink, 0.8);
     else if (cfg.border === "accent") one = css(c.accent, 0.9);
-    else if (cfg.border === "border" && th.borders && th.borders.length > 0) return { line: th.borders[0], grad: th.borders.slice(), angle: th.borderAngle || 0 };
+    else if (cfg.border === "border" && th.borders && th.borders.length > 0) return { line: th.borders[0], grad: th.borders.slice(), angle: th.borderAngle || 0, marks: [] };
     else one = css(c.ink, 0.2);
-    if (!cfg.outlineGradient) return { line: one, grad: [], angle: 0 };
+    if (!cfg.outlineGradient) return { line: one, grad: [], angle: 0, marks: [] };
+    if (cfg.outlineGradientTo === "spectrum") {
+        const ramp = spectrumOf(cfg, th, c).map(s => css(s, 0.95));
+        return { line: one, grad: [one].concat(ramp), angle: 0, marks: [css(c.accent, 0.95)].concat(ramp) };
+    }
     let to;
     if (cfg.outlineGradientTo === "accent") to = css(c.accent, 0.95);
     else if (cfg.outlineGradientTo === "palette" && th.palette && th.palette.length) to = th.palette[(th.palette.length > 1 ? 1 : 0)];
     else if (cfg.outlineGradientTo === "border" && th.borders && th.borders.length) to = th.borders[th.borders.length - 1];
     else to = css(mix(c.ink, [255, 255, 255], 0.6), 0.9);
-    return { line: one, grad: [one, to], angle: 0 };
+    return { line: one, grad: [one, to], angle: 0, marks: [] };
 }
 
 // the box of a widget in pixels: { w, h } of the whole thing, the content inside it, the caption's height
@@ -123,6 +143,7 @@ function shadowOf(cfg, colors) {
 // the color a gradient fill ends in, from the Gradient into setting
 function gradientEnd(cfg, th, c) {
     const to = cfg.gradientTo;
+    if (to === "spectrum") { const sp = spectrumOf(cfg, th, c); return mix(c.bg, sp[sp.length - 1], 0.5); }
     if (to === "palette" && th.palette && th.palette.length) return mix(c.bg, hex3(th.palette[th.palette.length > 1 ? 1 : 0]), 0.5);
     if (to === "border" && th.borders && th.borders.length) return mix(c.bg, hex3(th.borders[th.borders.length - 1]), 0.5);
     if (to === "lighter") return mix(c.bg, [255, 255, 255], 0.22);
@@ -140,15 +161,19 @@ function cardParams(cfg, th, colors, width, height, margin) {
     const light = lum(c.bg) > 0.5;
     const Ln = Lines.byKey[cfg.lines] || Lines.byKey.none;
     const lw = cfg.lines === "none" ? 0 : (cfg.borderWidth || 1);
+    const gradientOn = cfg.fill === "gradient" && S.noGradient !== true;
+    // Theme colors: the fill runs through several of them, each tinted into the card's color
+    const fillStops = gradientOn && cfg.gradientTo === "spectrum" ? spectrumOf(cfg, th, c).map(s => css(mix(c.bg, s, 0.5), alpha)) : [];
     return {
         width, height, margin,
         frame: cfg.frame, r: cfg.radius, surface: cfg.surface, lines: cfg.lines, ornament: cfg.ornaments,
         pointing: cfg.pointing, flat: cfg.flatCorners, railSide: cfg.railSide, gradAcross: cfg.gradientDir === "down",
         fill,
-        fill2: cfg.fill === "gradient" && S.noGradient !== true ? css(gradientEnd(cfg, th, c), alpha) : "",
+        fill2: gradientOn ? css(gradientEnd(cfg, th, c), alpha) : "",
+        fillStops,
         glass: cfg.fill === "glass" && S.noGradient !== true,
         line: Ln.usesColor === false ? css(c.accent, 0.9) : lc.line, lineWidth: lw,
-        lineGrad: lc.grad, lineAngle: lc.angle, markGrad: [],
+        lineGrad: lc.grad, lineAngle: lc.angle, markGrad: lc.marks,
         mark: css(c.accent, 0.95), markWidth: Math.max(1, cfg.borderWidth || 1),
         pattern: cfg.pattern === "none" ? "" : cfg.pattern, patternColor: css(c.ink, 0.06),
         depth: cfg.depth === "flat" ? "" : cfg.depth,

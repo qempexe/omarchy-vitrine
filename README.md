@@ -240,8 +240,8 @@ between tabs, and the search field covers every setting.
 | Looks | the sixteen ready-made desks, and twenty slots for your own, widgets included |
 | Widgets | every widget on the desktop; select one for its style, size, position, screen, card, accent, opacity, caption and content |
 | Shape | the card shape, the direction it points, square corners, roundness and inner padding |
-| Surface | the material, its opacity, solid, gradient or glass fill (with the gradient's color and direction), texture, depth and shadow |
-| Lines | the edge line, its color and width, an optional gradient, and which side a rail runs along |
+| Surface | the material, its opacity, solid, gradient or glass fill (with the gradient's color, which can be several colors of your theme, and its direction), texture, depth and shadow |
+| Lines | the edge line, its color and width, an optional gradient (into a lighter shade, the accent, or one or several colors of your theme), and which side a rail runs along |
 | Ornaments | decoration on the card, in the accent color |
 | Type | seven bundled fonts (Inter, Playfair, Cormorant, Space Grotesk, JetBrains Mono, Bebas Neue and a blackletter), the theme's font, or any installed font by search; weights from hairline to black; a text effect for widgets without a card |
 | Colors | the theme's colors, a palette color per widget, the window border's colors spread across the screen, your own colors, or monochrome |

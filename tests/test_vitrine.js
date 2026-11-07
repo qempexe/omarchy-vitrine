@@ -347,9 +347,53 @@ t("custom colors are used exactly as picked", () => {
   const ui = fs.readFileSync(path.join(__dirname, "../qml/core/UiState.qml"), "utf8")
   assert.ok(/fg: custom \? wantFg/.test(ui) && /accentText: custom \? fg/.test(ui) && /onText\(c\) \{ return custom \? fg/.test(ui))
 })
+t("cards can run through the theme's colors", () => {
+  const th = { fg: [234, 219, 200], barText: [234, 219, 200], accent: [200, 146, 90], urgent: [210, 120, 80], bg: [29, 21, 16],
+               palette: ["#cc3333", "#33cc33", "#3333cc", "#cccc33", "#cc33cc", "#33cccc"], borders: ["#1ee9d6", "#fe4fb6"], borderAngle: 45 }
+  const make = (over, theme) => {
+    const c = Object.assign(Schema.resolve({ frame: "rounded" }), { fill: "gradient", cardOpacity: 80 }, over)
+    const tt = theme || th
+    return { c, tt, p: Look.cardParams(c, tt, Look.colorsFor(c, tt, { card: "auto" }, 0, 0.5), 260, 140, 12) }
+  }
+  const stops = p => { const ctx = fakeCtx(); Card.paint(ctx, p); return ctx.calls.filter(k => k === "stop").length }
+  // several colors of the theme, each different, and the painter runs through all of them
+  const sp = make({ gradientTo: "spectrum" }).p
+  assert.ok(sp.fillStops.length >= 3 && sp.fillStops.length <= 4, "stops " + sp.fillStops.length)
+  assert.strictEqual(new Set(sp.fillStops).size, sp.fillStops.length)
+  assert.ok(sp.fill2 !== "" && stops(sp) >= sp.fillStops.length)
+  // the old choices, a solid fill and surfaces that take no gradient leave the stops alone
+  for (const to of ["accent", "palette", "border", "lighter", "darker"]) assert.deepStrictEqual(make({ gradientTo: to }).p.fillStops, [], to)
+  assert.deepStrictEqual(make({ gradientTo: "spectrum", fill: "solid" }).p.fillStops, [])
+  const frost = make({ gradientTo: "spectrum", surface: "frost" }).p
+  assert.deepStrictEqual(frost.fillStops, []); assert.strictEqual(frost.fill2, "")
+  // fewer theme colors: the window border's, then one palette color after the accent, then shades of the accent
+  const noPal = Object.assign({}, th, { palette: [] })
+  assert.strictEqual(make({ gradientTo: "spectrum" }, noPal).p.fillStops.length, 2)
+  assert.strictEqual(make({ gradientTo: "spectrum" }, Object.assign({}, th, { palette: ["#cc3333"] })).p.fillStops.length, 2)
+  const bare = make({ gradientTo: "spectrum" }, Object.assign({}, th, { palette: [], borders: [] })).p
+  assert.ok(bare.fillStops.length >= 3 && stops(bare) >= 3)
+  // Custom and Monochrome keep to their own colors; Monochrome stays without a hue
+  assert.ok(make({ gradientTo: "spectrum", colorMode: "custom" }).p.fillStops.length >= 3)
+  for (const c of make({ gradientTo: "spectrum", colorMode: "monochrome" }).p.fillStops) {
+    const [r, g, b] = c.match(/\d+/g).map(Number); assert.ok(r === g && g === b, c)
+  }
+  // gradient lines and the accents drawn with them: the old second color by default, the theme's colors when asked
+  const lines = to => make({ fill: "solid", lines: "solid", outlineGradient: true, outlineGradientTo: to }).p
+  for (const to of ["lighter", "accent", "palette", "border"]) { assert.strictEqual(lines(to).lineGrad.length, 2, to); assert.deepStrictEqual(lines(to).markGrad, [], to) }
+  assert.ok(lines("spectrum").lineGrad.length >= 4 && lines("spectrum").markGrad.length >= 4)
+  assert.deepStrictEqual(make({ outlineGradient: false, outlineGradientTo: "spectrum" }).p.lineGrad, [])
+  assert.deepStrictEqual(make({ outlineGradient: false, outlineGradientTo: "spectrum" }).p.markGrad, [])
+  assert.deepStrictEqual(make({ outlineGradient: true, outlineGradientTo: "spectrum", border: "border" }).p.markGrad, [])
+  Card.paint(fakeCtx(), make({ lines: "rail", ornaments: "brackets", outlineGradient: true, outlineGradientTo: "spectrum" }).p)
+  // saved settings: the new choices are kept, anything else falls back
+  assert.strictEqual(Schema.resolve({ gradientTo: "spectrum", outlineGradientTo: "spectrum" }).gradientTo, "spectrum")
+  assert.strictEqual(Schema.resolve({ outlineGradientTo: "spectrum" }).outlineGradientTo, "spectrum")
+  assert.strictEqual(Schema.resolve({ gradientTo: "rainbow" }).gradientTo, "accent")
+  assert.strictEqual(Schema.resolve({ outlineGradientTo: "rainbow" }).outlineGradientTo, "lighter")
+})
 t("manifest", () => {
   const m = JSON.parse(fs.readFileSync(path.join(__dirname, "../manifest.json"), "utf8"))
-  assert.strictEqual(m.id, "io.github.qempexe.vitrine"); assert.strictEqual(m.version, "1.1.1")
+  assert.strictEqual(m.id, "io.github.qempexe.vitrine"); assert.strictEqual(m.version, "1.2.0")
   for (const k in m.entryPoints) assert.ok(fs.existsSync(path.join(__dirname, "..", m.entryPoints[k])), k)
   for (const f of ["Inter", "PlayfairDisplay", "CormorantGaramond", "SpaceGrotesk", "JetBrainsMono", "BebasNeue", "UnifrakturMaguntia"])
     assert.ok(fs.existsSync(path.join(__dirname, "../fonts", f + ".ttf")), f)
