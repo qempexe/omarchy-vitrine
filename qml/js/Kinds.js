@@ -168,9 +168,11 @@ function clean(obj) {
 }
 function cleanList(value) {
     const out = [], seen = {};
-    // a real array, or a list handed over from outside (it has a length and numbered items)
-    if (!value || typeof value !== "object" || typeof value.length !== "number") return out;
-    for (let i = 0; i < value.length && out.length < MAX_WIDGETS; i++) {
+    // Only accept arrays and inspect at most the widget limit, including invalid entries.
+    // Imported JSON can contain arbitrary objects with attacker-controlled `length` values.
+    if (!Array.isArray(value)) return out;
+    const limit = Math.min(value.length, MAX_WIDGETS);
+    for (let i = 0; i < limit; i++) {
         const w = clean(value[i]);
         if (w && !seen[w.id]) { seen[w.id] = true; out.push(w); }
     }
